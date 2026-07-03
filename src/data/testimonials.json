@@ -1,1 +1,30 @@
-[]
+[
+  {
+    "id": "1",
+    "src": "/testimonials/testimonial-1.jpg",
+    "alt": "Customer feedback - egg and oyako sandos review",
+    "type": "chat",
+    "color": "#0ea5e9"
+  },
+  {
+    "id": "2",
+    "src": "/testimonials/testimonial-2.jpg",
+    "alt": "Customer feedback - egg sando",
+    "type": "chat",
+    "color": "#fbbf24"
+  },
+  {
+    "id": "3",
+    "src": "/testimonials/testimonial-3.jpg",
+    "alt": "Customer feedback - chickpea sando",
+    "type": "chat",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": "4",
+    "src": "/testimonials/testimonial-4.jpg",
+    "alt": "Customer feedback - Matcha choco",
+    "type": "chat",
+    "color": "#14b8a6"
+  }
+]
