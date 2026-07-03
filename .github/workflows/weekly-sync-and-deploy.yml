@@ -1,0 +1,111 @@
+name: Weekly Sync and Deploy
+
+on:
+  schedule:
+    - cron: '0 0 * * 1' # Run every Monday at 00:00 UTC (05:30 IST)
+  workflow_dispatch: # Allow manual run
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  sync-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # --- Instagram Feed Update ---
+
+      - name: Check Instagram Token Health
+        env:
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+        run: |
+          if [ -z "$INSTAGRAM_TOKEN" ]; then
+            echo "INSTAGRAM_TOKEN secret not found. Skipping token check."
+            exit 0
+          fi
+          node scripts/check-instagram-token.cjs
+
+      - name: Fetch Instagram Posts
+        env:
+          INSTAGRAM_TOKEN: ${{ secrets.INSTAGRAM_TOKEN }}
+        run: |
+          if [ -z "$INSTAGRAM_TOKEN" ]; then
+            echo "INSTAGRAM_TOKEN secret not found. Skipping Instagram update."
+            exit 0
+          fi
+          npm run fetch:instagram
+
+      # --- Menu Sync from Google Sheets ---
+
+      - name: Fetch Site Config
+        env:
+          SKUITEMMASTER_GOOGLE_SHEETS_API_KEY: ${{ secrets.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY }}
+          BHAARGAVI_SHEETS_ID: ${{ secrets.BHAARGAVI_SHEETS_ID }}
+        run: |
+          if [ -z "$SKUITEMMASTER_GOOGLE_SHEETS_API_KEY" ]; then
+            echo "SKUITEMMASTER_GOOGLE_SHEETS_API_KEY secret not found. Skipping config update."
+            exit 0
+          fi
+          npm run fetch:config
+
+      - name: Fetch Menu Data
+        env:
+          SKUITEMMASTER_GOOGLE_SHEETS_API_KEY: ${{ secrets.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY }}
+          BHAARGAVI_SHEETS_ID: ${{ secrets.BHAARGAVI_SHEETS_ID }}
+        run: |
+          if [ -z "$SKUITEMMASTER_GOOGLE_SHEETS_API_KEY" ]; then
+            echo "SKUITEMMASTER_GOOGLE_SHEETS_API_KEY secret not found. Skipping menu update."
+            exit 0
+          fi
+          npm run fetch:menu
+
+      # --- Carousel Images Sync from Google Sheets ---
+
+      - name: Fetch Carousel Images
+        env:
+          SKUITEMMASTER_GOOGLE_SHEETS_API_KEY: ${{ secrets.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY }}
+          BHAARGAVI_SHEETS_ID: ${{ secrets.BHAARGAVI_SHEETS_ID }}
+        run: |
+          if [ -z "$SKUITEMMASTER_GOOGLE_SHEETS_API_KEY" ]; then
+            echo "SKUITEMMASTER_GOOGLE_SHEETS_API_KEY secret not found. Skipping carousel image update."
+            exit 0
+          fi
+          npm run fetch:images
+
+      # --- Commit and Push All Changes ---
+
+      - name: Commit and Push
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          # Pull latest main BEFORE staging so we are on the newest commit.
+          # This avoids rebase conflicts when other commits land during the
+          # ~8 minute data-fetch window.
+          git pull origin main
+          git add src/data/ public/menu public/hero-banner public/testimonials
+          # Only commit and push if there are actual changes
+          git diff --staged --quiet || (git commit -m "chore: weekly sync - instagram feed, menu data & carousel images" && git push)
+
+      # --- Build and Deploy to Cloudflare Pages ---
+
+      - name: Build Web App
+        run: npm ci && npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: bhaargavi-website
+          directory: dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}

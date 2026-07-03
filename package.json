@@ -1,0 +1,43 @@
+{
+  "name": "bhaargavi-fresh-cuts",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/download-instagram-images.cjs",
+    "dev": "vite",
+    "prebuild": "node scripts/download-instagram-images.cjs",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview",
+    "test": "vitest",
+    "fetch:menu": "node scripts/fetch-menu.cjs",
+    "fetch:config": "node scripts/fetch-config.cjs",
+    "fetch:images": "node scripts/fetch-images.cjs",
+    "fetch:instagram": "node scripts/fetch-instagram.cjs",
+    "fetch:all": "npm run fetch:config && npm run fetch:menu && npm run fetch:images && npm run fetch:instagram"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "lucide-react": "^0.469.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-google-reviews": "^1.2.0",
+    "react-router-dom": "^7.1.1"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.1",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "autoprefixer": "^10.5.0",
+    "jsdom": "^25.0.1",
+    "postcss": "^8.5.15",
+    "tailwindcss": "^4.3.1",
+    "typescript": "~5.6.2",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}
