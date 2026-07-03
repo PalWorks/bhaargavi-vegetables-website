@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, ShieldCheck, Droplets, Thermometer, Wind } from 'lucide-react';
+import React from 'react';
+import { ShieldCheck, Droplets, Thermometer, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { HERO_IMAGES } from '../constants';
 
 const TrustBadge: React.FC<{ icon: React.ReactNode; label: string }> = ({ icon, label }) => (
   <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-bv-dark rounded-full px-3 py-1.5 shadow-sm text-xs font-semibold whitespace-nowrap">
@@ -12,27 +11,23 @@ const TrustBadge: React.FC<{ icon: React.ReactNode; label: string }> = ({ icon, 
 
 const Hero: React.FC = () => {
   const { t } = useLanguage();
-  const [current, setCurrent] = useState(0);
-  const images = HERO_IMAGES;
-
-  useEffect(() => {
-    const timer = setInterval(() => setCurrent(i => (i + 1) % images.length), 5000);
-    return () => clearInterval(timer);
-  }, [images.length]);
-
-  const prev = () => setCurrent(i => (i - 1 + images.length) % images.length);
-  const next = () => setCurrent(i => (i + 1) % images.length);
 
   return (
     <section id="home" className="relative min-h-screen flex flex-col justify-center overflow-hidden">
-      {/* Background images */}
-      {images.map((img, idx) => (
-        <div key={img.id}
-          className={`absolute inset-0 transition-opacity duration-1000 ${idx === current ? 'opacity-100' : 'opacity-0'}`}>
-          <img src={img.src} alt={img.alt} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-br from-bv-dark/70 via-bv-dark/40 to-transparent" />
-        </div>
-      ))}
+      {/* Background Video */}
+      <div className="absolute inset-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          poster="/hero-poster.jpg"
+          className="w-full h-full object-cover"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-br from-bv-dark/70 via-bv-dark/40 to-transparent" />
+      </div>
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
@@ -85,28 +80,6 @@ const Hero: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* Arrow controls */}
-      {images.length > 1 && (
-        <>
-          <button onClick={prev}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full p-2 transition-all">
-            <ChevronLeft size={20} />
-          </button>
-          <button onClick={next}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full p-2 transition-all">
-            <ChevronRight size={20} />
-          </button>
-
-          {/* Dot indicators */}
-          <div className="absolute bottom-20 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-            {images.map((_, i) => (
-              <button key={i} onClick={() => setCurrent(i)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${i === current ? 'w-6 bg-white' : 'w-1.5 bg-white/50'}`} />
-            ))}
-          </div>
-        </>
-      )}
     </section>
   );
 };
