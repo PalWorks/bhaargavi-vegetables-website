@@ -10,9 +10,11 @@ import GoogleReviews from './components/GoogleReviews';
 import InstagramFeed from './components/InstagramFeed';
 import AboutPage from './components/AboutPage';
 import Footer from './components/Footer';
+import ScrollVideoBackground from './components/ScrollVideoBackground';
 import { PrivacyPolicy, TermsOfService, RefundPolicy, ShippingPolicy } from './components/PolicyPages';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider, useLanguage } from './LanguageContext';
+import ErrorBoundary from './components/ErrorBoundary';
 
 const Layout: React.FC = () => {
   const { language } = useLanguage();
@@ -32,7 +34,8 @@ const Layout: React.FC = () => {
   const fontClass = language === 'ta' ? 'font-ta' : language === 'hi' ? 'font-hi' : '';
 
   return (
-    <div className={`min-h-screen flex flex-col bg-bv-cream ${fontClass}`}>
+    <div className={`min-h-screen flex flex-col ${fontClass}`}>
+      <ScrollVideoBackground />
       <CartSidebar />
       <Navbar />
       <main className="flex-grow">
@@ -56,22 +59,24 @@ const HomePage: React.FC = () => (
 
 function App() {
   return (
-    <LanguageProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route element={<Layout />}>
-              <Route path="/" element={<HomePage />} />
-              <Route path="/about" element={<AboutPage />} />
-              <Route path="/privacy" element={<PrivacyPolicy />} />
-              <Route path="/terms" element={<TermsOfService />} />
-              <Route path="/refund" element={<RefundPolicy />} />
-              <Route path="/shipping" element={<ShippingPolicy />} />
-            </Route>
-          </Routes>
-        </BrowserRouter>
-      </CartProvider>
-    </LanguageProvider>
+    <ErrorBoundary>
+      <LanguageProvider>
+        <CartProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route element={<Layout />}>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/privacy" element={<PrivacyPolicy />} />
+                <Route path="/terms" element={<TermsOfService />} />
+                <Route path="/refund" element={<RefundPolicy />} />
+                <Route path="/shipping" element={<ShippingPolicy />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </CartProvider>
+      </LanguageProvider>
+    </ErrorBoundary>
   );
 }
 

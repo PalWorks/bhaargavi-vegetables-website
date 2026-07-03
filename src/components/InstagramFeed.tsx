@@ -8,7 +8,7 @@ const InstagramFeed: React.FC = () => {
   const posts = INSTAGRAM_POSTS.slice(0, 14);
 
   return (
-    <section id="instagram" className="py-20 bg-white">
+    <section id="instagram" className="py-20 bg-white/20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center mb-10 gap-4">

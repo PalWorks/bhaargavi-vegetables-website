@@ -2,81 +2,61 @@ import React from 'react';
 import { ShieldCheck, Droplets, Thermometer, Wind } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 
-const TrustBadge: React.FC<{ icon: React.ReactNode; label: string }> = ({ icon, label }) => (
-  <div className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-bv-dark rounded-full px-3 py-1.5 shadow-sm text-xs font-semibold whitespace-nowrap">
-    <span className="text-bv-green">{icon}</span>
-    {label}
-  </div>
-);
-
 const Hero: React.FC = () => {
   const { t } = useLanguage();
 
   return (
     <section id="home" className="relative min-h-screen flex flex-col justify-center overflow-hidden">
-      {/* Background Video */}
-      <div className="absolute inset-0">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          poster="/hero-poster.jpg"
-          className="w-full h-full object-cover"
-        >
-          <source src="/hero-video.mp4" type="video/mp4" />
-        </video>
-        <div className="absolute inset-0 bg-gradient-to-br from-bv-dark/70 via-bv-dark/40 to-transparent" />
-      </div>
+      {/* Background Overlay Removed to maintain video brightness */}
 
       {/* Content */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-        <div className="max-w-2xl">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+        <div className="max-w-2xl lg:max-w-4xl">
           {/* Tag */}
-          <div className="inline-flex items-center gap-2 bg-bv-green/20 backdrop-blur-sm border border-bv-green/30 text-white text-sm font-medium rounded-full px-4 py-1.5 mb-6">
-            <span className="w-2 h-2 bg-bv-green-light rounded-full animate-pulse" />
+          <div className="inline-flex items-center gap-2 bg-bv-green/20 backdrop-blur-sm border border-bv-green/30 text-bv-dark text-sm lg:text-base font-bold rounded-full px-4 py-1.5 lg:px-5 lg:py-2 mb-6 lg:mb-8">
+            <span className="w-2 h-2 lg:w-2.5 lg:h-2.5 bg-bv-green rounded-full animate-pulse" />
             {t.hero.tag}
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl text-white leading-tight mb-6">
+          <h1 className="font-display text-4xl sm:text-5xl lg:text-[80px] text-bv-dark font-black leading-tight lg:leading-[1.1] mb-6 lg:mb-8">
             {t.hero.title_start}{' '}
-            <span className="text-bv-green-light">{t.hero.title_highlight}</span>
+            <span className="text-bv-green">{t.hero.title_highlight}</span>
             {t.hero.title_end && <><br />{t.hero.title_end}</>}
           </h1>
 
           {/* Description */}
-          <p className="text-white/90 text-lg leading-relaxed mb-8 max-w-lg">
+          <p className="text-bv-dark font-semibold text-lg lg:text-2xl leading-relaxed mb-10 lg:mb-14 max-w-lg lg:max-w-2xl">
             {t.hero.desc}
           </p>
 
-          {/* CTAs */}
-          <div className="flex flex-wrap gap-4 mb-10">
-            <a href="#products"
-              className="bg-bv-green hover:bg-bv-green-light text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-lg shadow-bv-green/30">
-              {t.hero.cta_shop}
-            </a>
-            <a href="/about"
-              className="bg-white/15 hover:bg-white/25 backdrop-blur-sm border border-white/40 text-white font-semibold px-8 py-3.5 rounded-full transition-all">
-              {t.hero.cta_about}
-            </a>
-          </div>
-
           {/* Social proof */}
-          <p className="text-white/70 text-sm font-medium">
+          <p className="text-bv-dark text-sm lg:text-base font-bold">
             ★★★★★ {t.hero.proof}
           </p>
         </div>
       </div>
 
       {/* Trust badges strip */}
-      <div className="relative z-10 pb-8 px-4">
+      <div className="relative z-10 pb-8 lg:pb-16 px-4">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-wrap gap-3">
-            <TrustBadge icon={<ShieldCheck size={14} />} label={t.hero.badge_fssai} />
-            <TrustBadge icon={<Droplets size={14} />} label={t.hero.badge_ro} />
-            <TrustBadge icon={<Thermometer size={14} />} label={t.hero.badge_cold} />
-            <TrustBadge icon={<Wind size={14} />} label={t.hero.badge_ac} />
+          <div className="grid grid-cols-2 gap-3 sm:flex sm:flex-row sm:justify-center lg:gap-6">
+            <div className="flex flex-col items-center justify-center p-3 lg:p-5 lg:px-8 bg-white/80 backdrop-blur-sm border border-bv-green/20 rounded-xl text-center shadow-sm">
+              <ShieldCheck className="text-bv-green mb-1 lg:mb-2 w-6 h-6 lg:w-8 lg:h-8" />
+              <span className="text-bv-dark font-bold text-xs sm:text-sm lg:text-base">{t.hero.badge_fssai}</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 lg:p-5 lg:px-8 bg-white/80 backdrop-blur-sm border border-bv-green/20 rounded-xl text-center shadow-sm">
+              <Droplets className="text-bv-green mb-1 lg:mb-2 w-6 h-6 lg:w-8 lg:h-8" />
+              <span className="text-bv-dark font-bold text-xs sm:text-sm lg:text-base">{t.hero.badge_ro}</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 lg:p-5 lg:px-8 bg-white/80 backdrop-blur-sm border border-bv-green/20 rounded-xl text-center shadow-sm">
+              <Thermometer className="text-bv-green mb-1 lg:mb-2 w-6 h-6 lg:w-8 lg:h-8" />
+              <span className="text-bv-dark font-bold text-xs sm:text-sm lg:text-base">{t.hero.badge_cold}</span>
+            </div>
+            <div className="flex flex-col items-center justify-center p-3 lg:p-5 lg:px-8 bg-white/80 backdrop-blur-sm border border-bv-green/20 rounded-xl text-center shadow-sm">
+              <Wind className="text-bv-green mb-1 lg:mb-2 w-6 h-6 lg:w-8 lg:h-8" />
+              <span className="text-bv-dark font-bold text-xs sm:text-sm lg:text-base">{t.hero.badge_ac}</span>
+            </div>
           </div>
         </div>
       </div>

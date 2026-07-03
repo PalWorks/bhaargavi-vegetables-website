@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'RupeeSystemFont';
+  src: local('Arial'), local('Helvetica'), local('system-ui'), local('sans-serif');
+  unicode-range: U+20B9;
+}
+
 @theme {
   --color-bv-green:         #2E7D32;
   --color-bv-green-light:   #66BB6A;
@@ -12,10 +18,10 @@
   --color-bv-card:          #F0F7EE;
   --color-bv-border:        #C8E6C9;
 
-  --font-sans: 'DM Sans', system-ui, sans-serif;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-ta: 'Noto Sans Tamil', 'DM Sans', sans-serif;
-  --font-hi: 'Noto Sans Devanagari', 'DM Sans', sans-serif;
+  --font-sans: 'RupeeSystemFont', 'DM Sans', system-ui, sans-serif;
+  --font-display: 'RupeeSystemFont', 'Playfair Display', Georgia, serif;
+  --font-ta: 'RupeeSystemFont', 'Noto Sans Tamil', 'DM Sans', sans-serif;
+  --font-hi: 'RupeeSystemFont', 'Noto Sans Devanagari', 'DM Sans', sans-serif;
 }
 
 html {

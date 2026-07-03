@@ -28,9 +28,23 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     try {
       const saved = localStorage.getItem(CART_KEY);
-      if (saved) setItems(JSON.parse(saved));
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        // Schema validation to prevent tampering crashes
+        if (Array.isArray(parsed) && parsed.every(i => 
+          typeof i === 'object' && i !== null &&
+          typeof i.id === 'string' &&
+          typeof i.price === 'number' && !isNaN(i.price) &&
+          typeof i.quantity === 'number' && !isNaN(i.quantity) &&
+          typeof i.weight === 'string'
+        )) {
+          setItems(parsed);
+        } else {
+          localStorage.removeItem(CART_KEY);
+        }
+      }
     } catch {
-      // ignore
+      localStorage.removeItem(CART_KEY);
     }
   }, []);
 
@@ -92,25 +106,26 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 };
 
 // Build WhatsApp message from cart items
-export const buildWhatsAppMessage = (items: CartItem[], cartTotal: number, greeting: string, confirmText: string, customNoteLabel: string): string => {
+export const buildWhatsAppMessage = (items: CartItem[], cartTotal: number, greeting: string, confirmText: string, customNoteLabel: string, deliveryAddress: string): string => {
   const now = new Date();
   const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
   let msg = `[${timestamp}]%0A%0A${greeting}%0A%0A`;
 
   items.forEach(item => {
-    msg += `${item.quantity} x ${item.name} (${item.weight}) - Rs ${item.price * item.quantity}%0A`;
+    msg += `${item.quantity} x ${item.name} (${item.weight}) - ₹ ${item.price * item.quantity}%0A`;
     if (item.customNote) {
       msg += `  ${customNoteLabel}: ${item.customNote}%0A`;
     }
   });
 
-  msg += `%0A*Total: Rs ${cartTotal}*%0A%0A${confirmText}`;
+  msg += `%0A*Delivery Address:*%0A${deliveryAddress.replace(/\n/g, '%0A')}%0A`;
+  msg += `%0A*Total: ₹ ${cartTotal}*%0A%0A${confirmText}`;
   return msg;
 };
 
 // Record order to Google Apps Script endpoint (best-effort)
-export const recordOrder = async (items: CartItem[], cartTotal: number): Promise<void> => {
+export const recordOrder = async (items: CartItem[], cartTotal: number, deliveryAddress: string): Promise<void> => {
   const endpointUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
   if (!endpointUrl) return;
 
@@ -118,23 +133,30 @@ export const recordOrder = async (items: CartItem[], cartTotal: number): Promise
   const customNotes = items.filter(i => i.customNote).map(i => `${i.name}: ${i.customNote}`).join('; ');
   const orderId = `BV-${Date.now()}`;
 
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 2000); // 2-second strict timeout
+
   try {
     await fetch(endpointUrl, {
       method: 'POST',
       mode: 'no-cors',
       headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
       body: JSON.stringify({
         orderId,
         timestamp: new Date().toISOString(),
         items: itemsSummary,
         total: cartTotal,
         customNote: customNotes || '',
+        address: deliveryAddress,
         status: 'New',
         waNumber: CONTACT_PHONE,
       }),
     });
   } catch {
-    // non-blocking — WhatsApp still opens
+    // non-blocking — fails fast on timeout, WhatsApp still opens
+  } finally {
+    clearTimeout(timeoutId);
   }
 };
 

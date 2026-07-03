@@ -12,7 +12,7 @@ const GoogleReviews: React.FC = () => {
   // If Featurable is configured, embed their widget
   if (FEATURABLE_ID) {
     return (
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
             <p className="text-bv-green font-semibold text-sm tracking-widest uppercase mb-3">Google Reviews</p>
@@ -34,7 +34,7 @@ const GoogleReviews: React.FC = () => {
 
   // Placeholder when Featurable is not yet configured
   return (
-    <section className="py-16 bg-bv-green-pale">
+    <section className="py-16 bg-bv-green-pale/30">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div className="flex justify-center gap-1 mb-4">
           {Array.from({ length: 5 }).map((_, i) => (

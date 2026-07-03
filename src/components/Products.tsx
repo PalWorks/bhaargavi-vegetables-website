@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Plus, Minus, ShoppingCart } from 'lucide-react';
+import { Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { MENU_ITEMS } from '../constants';
@@ -40,10 +40,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-bv-border/50 flex flex-col">
+    <div className="bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-bv-border/50 flex flex-col">
       {/* Image */}
       <div className="relative h-44 bg-bv-card overflow-hidden">
-        <img src={item.image} alt={item.name} className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+        <img src={item.image} alt={item.name} 
+             onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
+             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
           {item.isBestseller && <Badge label={t.products.bestseller} color="bg-bv-orange text-white" />}
           {item.isNew && <Badge label={t.products.new_label} color="bg-bv-green text-white" />}
@@ -54,7 +56,22 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
       <div className="p-4 flex flex-col flex-1">
         <h3 className="font-bold text-bv-dark text-base leading-snug mb-1">{item.name}</h3>
-        <p className="text-bv-muted text-xs leading-relaxed mb-3 flex-1">{item.description}</p>
+        <p className="text-bv-muted text-xs leading-relaxed mb-3">{item.description}</p>
+
+        {/* Ingredients */}
+        {item.ingredients && item.ingredients.length > 0 && (
+          <div className="mb-4">
+            <p className="text-[10px] text-bv-muted font-bold tracking-wider uppercase mb-1.5">Ingredients</p>
+            <div className="flex flex-wrap gap-1.5">
+              {item.ingredients.map(ing => (
+                <span key={ing} className="text-[10px] bg-gray-100 text-bv-dark px-2 py-0.5 rounded border border-gray-200">
+                  {ing}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+        <div className="flex-1" />
 
         {/* Pack size selector */}
         <div className="mb-3">
@@ -76,13 +93,13 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 
         {/* Price */}
         <div className="flex items-center gap-2 mb-3">
-          <span className="text-bv-green font-bold text-xl">Rs {selectedSize.price}</span>
+          <span className="text-bv-green font-bold text-xl">₹ {selectedSize.price}</span>
           {selectedSize.listPrice && (
-            <span className="text-bv-muted text-sm line-through">Rs {selectedSize.listPrice}</span>
+            <span className="text-bv-muted text-sm line-through">₹ {selectedSize.listPrice}</span>
           )}
         </div>
 
-        {/* Custom note toggle */}
+        {/* Custom note toggle - Temporarily Disabled 
         <button onClick={() => setShowNoteInput(v => !v)}
           className="text-xs text-bv-green underline underline-offset-2 mb-2 text-left hover:text-bv-green-light transition-colors">
           {t.products.custom_size}
@@ -92,6 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
             placeholder={t.products.custom_size_placeholder}
             className="text-xs border border-bv-border rounded-lg px-3 py-2 mb-3 w-full focus:outline-none focus:border-bv-green focus:ring-1 focus:ring-bv-green/20" />
         )}
+        */}
 
         {/* Add to cart */}
         {item.isSoldOut ? (
@@ -108,7 +126,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
         ) : (
           <button onClick={handleAdd}
             className="w-full py-2.5 bg-bv-green hover:bg-bv-green-light text-white rounded-xl font-semibold text-sm transition-all flex items-center justify-center gap-2 active:scale-95">
-            <ShoppingCart size={15} />
+            <ShoppingBag size={15} />
             {t.products.add}
           </button>
         )}
@@ -134,7 +152,7 @@ const Products: React.FC = () => {
     : MENU_ITEMS.filter(i => i.category === activeCategory);
 
   return (
-    <section id="products" className="py-20 bg-bv-cream">
+    <section id="products" className="py-20 bg-bv-cream/30">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">

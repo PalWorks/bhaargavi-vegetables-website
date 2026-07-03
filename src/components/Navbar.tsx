@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, Menu, X, MessageCircle } from 'lucide-react';
+import { ShoppingBag, Menu, X, MessageCircle, Languages } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { LOGO_SRC, CONTACT_PHONE } from '../constants';
@@ -38,9 +38,9 @@ const Navbar: React.FC = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2 shrink-0">
             <img src={LOGO_SRC} alt="Bhaargavi Fresh Cuts" className="h-12 w-12 rounded-full object-cover border-2 border-bv-green/20" />
-            <div className="hidden sm:block">
+            <div>
               <p className="font-display font-bold text-bv-dark text-base leading-tight">BHAARGAVI</p>
-              <p className="text-xs text-bv-green font-semibold tracking-wide">FRESH CUTS</p>
+              <p className="text-[10px] sm:text-xs text-bv-green font-semibold tracking-wide">FRESH CUTS</p>
             </div>
           </Link>
 
@@ -56,26 +56,27 @@ const Navbar: React.FC = () => {
           </nav>
 
           {/* Right Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-4 sm:gap-6">
             {/* Language Switcher */}
             <button onClick={toggleLanguage}
-              className="hidden sm:flex items-center gap-1 text-xs font-semibold text-bv-green border border-bv-green/40 rounded-full px-3 py-1.5 hover:bg-bv-green hover:text-white transition-all">
-              {langLabels[language]}
+              className="flex items-center text-bv-dark hover:text-bv-green transition-all"
+              title="Change Language">
+              <img src="/Tamil-English Translation Icon.png" alt="Translate" className="w-6 h-6 object-contain" />
             </button>
 
             {/* WhatsApp CTA */}
             <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
-              className="hidden md:flex items-center gap-2 bg-[#25D366] text-white text-sm font-semibold px-4 py-2 rounded-full hover:bg-[#128C7E] transition-colors">
-              <MessageCircle size={15} />
-              {t.nav.order}
+              className="flex items-center justify-center text-bv-dark hover:text-[#25D366] transition-colors"
+              title={t.nav.order}>
+              <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-6 h-6 object-contain" />
             </a>
 
             {/* Cart */}
             <button onClick={toggleCart}
-              className="relative p-2 text-bv-dark hover:text-bv-green transition-colors">
-              <ShoppingCart size={22} />
+              className="relative text-bv-dark hover:text-bv-green transition-colors">
+              <ShoppingBag size={24} />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-bv-orange text-white text-[10px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center min-w-[18px] min-h-[18px] px-1">
+                <span className="absolute -top-1.5 -right-1.5 bg-bv-orange text-white text-[10px] font-bold rounded-full w-4.5 h-4.5 flex items-center justify-center min-w-[18px] min-h-[18px] px-1">
                   {cartCount}
                 </span>
               )}
@@ -83,8 +84,8 @@ const Navbar: React.FC = () => {
 
             {/* Mobile menu */}
             <button onClick={() => setIsMobileOpen(v => !v)}
-              className="lg:hidden p-2 text-bv-dark hover:text-bv-green transition-colors">
-              {isMobileOpen ? <X size={22} /> : <Menu size={22} />}
+              className="lg:hidden text-bv-dark hover:text-bv-green transition-colors">
+              {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
@@ -102,12 +103,13 @@ const Navbar: React.FC = () => {
             ))}
             <div className="flex items-center gap-3 pt-2 border-t border-bv-border">
               <button onClick={toggleLanguage}
-                className="text-sm font-semibold text-bv-green border border-bv-green rounded-full px-4 py-2 hover:bg-bv-green hover:text-white transition-all">
+                className="flex items-center justify-center gap-2 text-sm font-semibold text-bv-green border border-bv-green rounded-full px-4 py-2 hover:bg-bv-green hover:text-white transition-all">
+                <img src="/Tamil-English Translation Icon.png" alt="Translate" className="w-5 h-5 object-contain" />
                 {langLabels[language]}
               </button>
               <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
-                className="flex items-center gap-2 bg-[#25D366] text-white text-sm font-semibold px-4 py-2 rounded-full">
-                <MessageCircle size={15} />
+                className="flex items-center justify-center gap-2 text-sm font-bold text-bv-dark border border-[#25D366] rounded-full px-4 py-1.5 hover:bg-[#25D366] hover:text-white transition-all">
+                <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-6 h-6 object-contain" />
                 {t.nav.order}
               </a>
             </div>

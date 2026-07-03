@@ -11,26 +11,13 @@ const https = require('https');
 
 const API_KEY = process.env.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY;
 const SPREADSHEET_ID = process.env.BHAARGAVI_SHEETS_ID || '1Ao_1pGEsPkCRgtOho02ZqaAUOsMUiuJiaTEsLbPHQW8';
-const RANGE = 'Products!A2:Q200';
+const RANGE = 'Products!A1:Z200';
 const OUTPUT = path.join(__dirname, '..', 'src', 'data', 'menu.json');
 
 if (!API_KEY) {
   console.warn('[fetch-menu] SKUITEMMASTER_GOOGLE_SHEETS_API_KEY not set — skipping');
   process.exit(0);
 }
-
-const SIZE_COLS = [
-  { col: 7, key: '100g', label: '100 g' },
-  { col: 8, key: '200g', label: '200 g' },
-  { col: 9, key: '250g', label: '250 g' },
-  { col: 10, key: '300g', label: '300 g' },
-  { col: 11, key: '500g', label: '500 g' },
-  { col: 12, key: '1kg', label: '1 kg' },
-  { col: 13, key: '2kg', label: '2 kg' },
-  { col: 14, key: '3kg', label: '3 kg' },
-  { col: 15, key: '5kg', label: '5 kg' },
-  { col: 16, key: '10kg', label: '10 kg' },
-];
 
 const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${RANGE}?key=${API_KEY}`;
 
@@ -40,22 +27,57 @@ https.get(url, res => {
   res.on('end', () => {
     try {
       const parsed = JSON.parse(data);
-      const rows = (parsed.values || []).filter(r => r[1]); // skip empty name rows
+      const rows = parsed.values || [];
+      if (rows.length < 2) {
+        console.log('[fetch-menu] No data found.');
+        return;
+      }
+      
+      const headers = rows[0].map(h => h ? h.toLowerCase().trim() : '');
+      const dataRows = rows.slice(1);
+      
+      const colIdx = (name) => headers.indexOf(name.toLowerCase());
+      
+      const nameCol = colIdx('name');
+      const descCol = colIdx('description');
+      const catCol = colIdx('category');
+      const badgeCol = colIdx('badge');
+      const imageCol = colIdx('image');
+      const ingredientsCol = colIdx('ingredients');
+      
+      const SIZE_LABELS = ['100g', '200g', '250g', '300g', '500g', '1kg', '2kg', '3kg', '5kg', '10kg'];
+      const sizeCols = SIZE_LABELS.map(label => ({
+        col: colIdx(label),
+        label: label.replace('g', ' g').replace('kg', ' kg')
+      })).filter(s => s.col !== -1);
 
-      const items = rows.map((row, idx) => {
-        const packSizes = SIZE_COLS
+      const convertDriveUrl = (url) => {
+        if (!url || !url.includes('drive.google.com')) return url;
+        let id = null;
+        const fileMatch = url.match(/\\/file\\/d\\/([a-zA-Z0-9_-]+)/);
+        if (fileMatch) id = fileMatch[1];
+        if (!id) {
+          const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+          if (idMatch) id = idMatch[1];
+        }
+        return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
+      };
+
+      const items = dataRows.filter(r => r[nameCol]).map((row, idx) => {
+        const packSizes = sizeCols
           .filter(s => row[s.col] && !isNaN(Number(row[s.col])) && Number(row[s.col]) > 0)
           .map(s => ({ weight: s.label, price: Number(row[s.col]) }));
 
-        const badge = (row[4] || '').trim().toLowerCase();
+        const badge = (row[badgeCol] || '').trim().toLowerCase();
+        const rawImage = (row[imageCol] || '').trim();
         return {
           id: String(idx + 1),
-          name: (row[1] || '').trim(),
-          description: (row[2] || '').trim(),
-          category: (row[3] || 'cut').trim().toLowerCase(),
-          badge: (row[4] || '').trim() || undefined,
-          image: (row[5] || '').trim(),
-          ingredients: row[6] ? row[6].split(',').map(s => s.trim()) : [],
+          name: (row[nameCol] || '').trim(),
+          description: (row[descCol] || '').trim(),
+          category: (row[catCol] || 'cut').trim().toLowerCase(),
+          badge: (row[badgeCol] || '').trim() || undefined,
+          image: convertDriveUrl(rawImage),
+          ingredients: row[ingredientsCol] ? row[ingredientsCol].split(',').map(s => s.trim()) : [],
           packSizes,
           isNew: badge === 'new',
           isBestseller: badge === 'bestseller',

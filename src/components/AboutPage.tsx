@@ -26,10 +26,10 @@ const AboutPage: React.FC = () => {
   const { t } = useLanguage();
 
   return (
-    <div className="pt-20 bg-bv-cream">
+    <div className="pt-20 bg-bv-cream/30">
 
       {/* Hero */}
-      <section className="relative py-20 bg-bv-dark overflow-hidden">
+      <section className="relative py-20 bg-bv-dark/60 overflow-hidden">
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&q=60')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -54,7 +54,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Our Story */}
-      <section className="py-16 bg-bv-green-pale">
+      <section className="py-16 bg-bv-green-pale/30">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
             <p className="text-bv-green font-semibold text-sm tracking-widest uppercase mb-2">{t.story.tag}</p>
@@ -115,7 +115,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Process steps */}
-      <section className="py-16 bg-bv-dark">
+      <section className="py-16 bg-bv-dark/60">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="font-display text-2xl sm:text-3xl text-white mb-3">{t.about.process_title}</h2>
           <p className="text-white/70 text-sm max-w-xl mx-auto mb-12">{t.about.process_sub}</p>
@@ -152,7 +152,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Services */}
-      <section className="py-16 bg-bv-card">
+      <section className="py-16 bg-bv-card/30">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="font-display text-2xl sm:text-3xl text-bv-dark text-center mb-8">{t.about.services_title}</h2>
           <div className="grid sm:grid-cols-2 gap-3">
@@ -167,7 +167,7 @@ const AboutPage: React.FC = () => {
       </section>
 
       {/* Vision */}
-      <section className="py-16 bg-bv-green text-white text-center">
+      <section className="py-16 bg-bv-green/60 text-white text-center">
         <div className="max-w-2xl mx-auto px-4">
           <h2 className="font-display text-2xl sm:text-3xl mb-4">{t.about.vision_title}</h2>
           <p className="text-white/90 text-lg leading-relaxed">{t.about.vision_text}</p>

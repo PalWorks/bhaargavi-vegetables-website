@@ -99,6 +99,8 @@ jobs:
       # --- Build and Deploy to Cloudflare Pages ---
 
       - name: Build Web App
+        env:
+          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
         run: npm ci && npm run build
 
       - name: Deploy to Cloudflare Pages

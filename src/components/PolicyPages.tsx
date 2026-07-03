@@ -44,7 +44,7 @@ export const TermsOfService: React.FC = () => (
     <h2>3. Pricing</h2>
     <p>Prices are in Indian Rupees (Rs) and inclusive of all taxes. Prices may change without prior notice; the price at the time of order confirmation is final.</p>
     <h2>4. Minimum Order</h2>
-    <p>The minimum order value for delivery is Rs 199. Orders below this value may be collected in person.</p>
+    <p>The minimum order value for delivery is ₹ 199. Orders below this value may be collected in person.</p>
     <h2>5. Payment</h2>
     <p>Payment is collected at the time of delivery. We accept UPI, cash, and bank transfer.</p>
     <h2>6. Perishable Nature</h2>
@@ -80,13 +80,13 @@ export const ShippingPolicy: React.FC = () => (
     <h2>2. Delivery Days and Hours</h2>
     <p>We deliver Monday to Saturday, between 6 AM and 8 PM. We do not deliver on Sundays and public holidays.</p>
     <h2>3. Minimum Order for Delivery</h2>
-    <p>The minimum order value for home delivery is Rs 199. Orders below this threshold can be picked up from our facility at Plot No. 28, ORR Diamond Avenue, Pazhanthandalam.</p>
+    <p>The minimum order value for home delivery is ₹ 199. Orders below this threshold can be picked up from our facility at Plot No. 28, ORR Diamond Avenue, Pazhanthandalam.</p>
     <h2>4. Delivery Charges</h2>
-    <p>Delivery is free for orders above Rs 199 within our standard service area. Delivery charges for extended areas will be communicated at the time of order confirmation.</p>
+    <p>Delivery is free for orders above ₹ 199 within our standard service area. Delivery charges for extended areas will be communicated at the time of order confirmation.</p>
     <h2>5. Delivery Timeline</h2>
     <p>Same-day delivery is available for orders placed before 10 AM. Orders placed after 10 AM will be delivered the next working day.</p>
     <h2>6. Failed Delivery</h2>
-    <p>If we are unable to reach you at the delivery address, we will contact you via WhatsApp. A second delivery attempt may attract an additional Rs 30 charge.</p>
+    <p>If we are unable to reach you at the delivery address, we will contact you via WhatsApp. A second delivery attempt may attract an additional ₹ 30 charge.</p>
     <h2>7. Freshness Guarantee</h2>
     <p>Products are processed and packed on the day of delivery to ensure maximum freshness. All products are transported in cold-chain conditions.</p>
   </PolicyLayout>
