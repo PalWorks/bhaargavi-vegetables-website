@@ -33,8 +33,9 @@ const ScrollVideoBackground: React.FC = () => {
       if (videoRef.current && videoRef.current.duration) {
         const targetTime = videoRef.current.duration * currentFraction;
         // Only update if difference is noticeable, to prevent micro-stutters
-        if (Math.abs(videoRef.current.currentTime - targetTime) > 0.05) {
-          videoRef.current.currentTime = targetTime;
+        // Also force an update if currentTime is exactly 0 to ensure the first frame is painted
+        if (Math.abs(videoRef.current.currentTime - targetTime) > 0.05 || videoRef.current.currentTime === 0) {
+          videoRef.current.currentTime = targetTime || 0.001;
         }
       }
       animationFrameId = requestAnimationFrame(renderLoop);
