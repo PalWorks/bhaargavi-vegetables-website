@@ -13,6 +13,19 @@ const ScrollVideoBackground: React.FC = () => {
         return; // Skip animation loop
       }
     }
+    
+    // Force metadata load and unlock video for strict browsers / incognito mode
+    if (videoRef.current) {
+      videoRef.current.load();
+      const playPromise = videoRef.current.play();
+      if (playPromise !== undefined) {
+        playPromise.then(() => {
+          videoRef.current?.pause();
+        }).catch(() => {
+          // Play might be rejected, but the attempt forces metadata to load
+        });
+      }
+    }
 
     let animationFrameId: number;
     let targetFraction = 0;
