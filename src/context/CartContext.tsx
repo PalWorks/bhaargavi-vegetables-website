@@ -129,9 +129,14 @@ export const recordOrder = async (items: CartItem[], cartTotal: number, delivery
   const endpointUrl = import.meta.env.VITE_APPS_SCRIPT_URL;
   if (!endpointUrl) return;
 
-  const itemsSummary = items.map(i => `${i.quantity}x ${i.name} ${i.weight}`).join(', ');
-  const customNotes = items.filter(i => i.customNote).map(i => `${i.name}: ${i.customNote}`).join('; ');
+  const itemsSummary = items.map(i => `${i.quantity} x ${i.name} (${i.weight}) - ₹ ${i.price * i.quantity}`).join('\n');
+  const customNotes = items.filter(i => i.customNote).map(i => `${i.name}: ${i.customNote}`).join('\n');
   const orderId = `BV-${Date.now()}`;
+
+  // Get IST timestamp safely
+  const now = new Date();
+  const istTime = new Date(now.toLocaleString("en-US", {timeZone: "Asia/Kolkata"}));
+  const istTimestamp = `${istTime.getFullYear()}-${String(istTime.getMonth() + 1).padStart(2, '0')}-${String(istTime.getDate()).padStart(2, '0')} ${String(istTime.getHours()).padStart(2, '0')}:${String(istTime.getMinutes()).padStart(2, '0')}:${String(istTime.getSeconds()).padStart(2, '0')}`;
 
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 2000); // 2-second strict timeout
@@ -144,7 +149,7 @@ export const recordOrder = async (items: CartItem[], cartTotal: number, delivery
       signal: controller.signal,
       body: JSON.stringify({
         orderId,
-        timestamp: new Date().toISOString(),
+        timestamp: istTimestamp,
         items: itemsSummary,
         total: cartTotal,
         customNote: customNotes || '',
