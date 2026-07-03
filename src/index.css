@@ -44,3 +44,7 @@ body {
   font-family: var(--font-hi);
   line-height: 1.8;
 }
+
+video::-moz-media-controls {
+  display: none !important;
+}

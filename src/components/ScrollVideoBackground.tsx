@@ -3,6 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const ScrollVideoBackground: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [shouldLoadVideo, setShouldLoadVideo] = useState(true);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   useEffect(() => {
     // Check for slow connection or data saver to prevent loading 10MB video
@@ -77,7 +78,10 @@ const ScrollVideoBackground: React.FC = () => {
           muted
           playsInline
           preload="auto"
-          className="absolute inset-0 w-full h-full object-cover"
+          disablePictureInPicture
+          disableRemotePlayback
+          onCanPlay={() => setIsVideoReady(true)}
+          className={`absolute inset-0 w-full h-full object-cover pointer-events-none transition-opacity duration-1000 ${isVideoReady ? 'opacity-100' : 'opacity-0'}`}
         >
           <source src="/hero-video-smooth.mp4" type="video/mp4" />
         </video>
