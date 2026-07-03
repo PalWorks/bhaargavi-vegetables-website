@@ -54,7 +54,7 @@ https.get(url, res => {
       const convertDriveUrl = (url) => {
         if (!url || !url.includes('drive.google.com')) return url;
         let id = null;
-        const fileMatch = url.match(/\\/file\\/d\\/([a-zA-Z0-9_-]+)/);
+        const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
         if (fileMatch) id = fileMatch[1];
         if (!id) {
           const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
