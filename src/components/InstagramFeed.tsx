@@ -28,7 +28,7 @@ const InstagramFeed: React.FC = () => {
           {posts.map(post => (
             <a key={post.id} href={post.link} target="_blank" rel="noreferrer"
               className="relative aspect-square overflow-hidden rounded-xl group bg-bv-card">
-              <img src={post.image} alt={post.caption.substring(0, 60)}
+              <img loading="lazy" src={post.image} alt={post.caption.substring(0, 60)}
                 className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
               <div className="absolute inset-0 bg-bv-dark/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col items-center justify-center gap-1 p-2">
                 <Heart size={16} className="text-white fill-white" />

@@ -33,7 +33,7 @@ const AboutPage: React.FC = () => {
         <div className="absolute inset-0 opacity-10"
           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&q=60')", backgroundSize: 'cover', backgroundPosition: 'center' }} />
         <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <img src={LOGO_SRC} alt="Bhaargavi Fresh Cuts" className="w-28 h-28 rounded-full mx-auto mb-6 border-4 border-white/20 object-cover shadow-xl" />
+          <img loading="lazy" src={LOGO_SRC} alt="Bhaargavi Fresh Cuts" className="w-28 h-28 rounded-full mx-auto mb-6 border-4 border-white/20 object-cover shadow-xl" />
           <h1 className="font-display text-3xl sm:text-4xl lg:text-5xl text-white mb-4">{t.about.hero_title}</h1>
           <p className="text-white/80 text-lg max-w-2xl mx-auto leading-relaxed">{t.about.hero_desc}</p>
         </div>
@@ -64,7 +64,7 @@ const AboutPage: React.FC = () => {
             {STORY_STEPS.map((step, idx) => (
               <div key={step.id} className={`flex flex-col sm:flex-row gap-6 items-center ${idx % 2 === 1 ? 'sm:flex-row-reverse' : ''}`}>
                 <div className="w-full sm:w-80 flex-shrink-0 rounded-2xl overflow-hidden shadow-md aspect-video sm:aspect-square">
-                  <img src={step.image} alt={(t.story as Record<string, string>)[step.titleKey]} className="w-full h-full object-cover" />
+                  <img loading="lazy" src={step.image} alt={(t.story as Record<string, string>)[step.titleKey]} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-3 mb-3">

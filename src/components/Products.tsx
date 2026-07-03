@@ -43,7 +43,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
     <div className="bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-bv-border/50 flex flex-col">
       {/* Image */}
       <div className="relative h-44 bg-bv-card overflow-hidden">
-        <img src={item.image} alt={item.name} 
+        <img loading="lazy" src={item.image} alt={item.name} 
              onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">

@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="flex items-center gap-3 mb-4">
-              <img src={LOGO_SRC} alt="Bhaargavi Fresh Cuts" className="h-14 w-14 rounded-full object-cover border-2 border-bv-green/30" />
+              <img loading="lazy" src={LOGO_SRC} alt="Bhaargavi Fresh Cuts" className="h-14 w-14 rounded-full object-cover border-2 border-bv-green/30" />
               <div>
                 <p className="font-display font-bold text-xl leading-tight">BHAARGAVI</p>
                 <p className="text-bv-green-light text-xs font-semibold tracking-widest">FRESH CUTS</p>
@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
                 <li>
                   <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
                     className="flex items-center gap-2 text-sm text-white/80 hover:text-[#25D366] transition-colors">
-                    <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-4 h-4 object-contain opacity-80 shrink-0" />
+                    <img loading="lazy" src="/WhatsApp Icon.png" alt="WhatsApp" className="w-4 h-4 object-contain opacity-80 shrink-0" />
                     <span>{CONTACT_PHONE_DISPLAY}</span>
                   </a>
                 </li>

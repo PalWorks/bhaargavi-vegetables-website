@@ -98,7 +98,7 @@ const CartSidebar: React.FC = () => {
                 return (
                   <div key={key} className="flex gap-3 p-3 bg-bv-card rounded-xl border border-bv-border/50">
                     <div className="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0 bg-white">
-                      <img src={item.image} alt={item.name} 
+                      <img loading="lazy" src={item.image} alt={item.name} 
                            onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
                            className="w-full h-full object-cover" />
                     </div>
@@ -244,7 +244,7 @@ const CartSidebar: React.FC = () => {
                   ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   : 'bg-[#25D366] hover:bg-[#128C7E] text-white hover:shadow-xl active:scale-[0.98]'
               }`}>
-              <img src="/WhatsApp Icon.png" alt="" className={`w-6 h-6 object-contain ${isBelowMinimum ? 'opacity-50 grayscale' : ''}`} />
+              <img loading="lazy" src="/WhatsApp Icon.png" alt="" className={`w-6 h-6 object-contain ${isBelowMinimum ? 'opacity-50 grayscale' : ''}`} />
               {isBelowMinimum
                 ? t.cart.min_order.replace('{amount}', String(SITE_CONFIG.minOrderValue))
                 : t.cart.checkout}
