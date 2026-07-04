@@ -183,7 +183,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Pineapple Cut',
     description: 'Fresh pineapple cored, peeled, and sliced into bite-sized pieces.',
     packSizes: [{ weight: '200 g', price: 45 }, { weight: '500 g', price: 100 }],
-    image: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?w=400&q=80',
+    image: '/menu/pineapple_cut.png',
     category: 'cut',
     ingredients: ['Pineapple'],
   },
@@ -192,7 +192,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Pomegranate Peeled',
     description: 'Pomegranate arils separated and ready to eat, garnish, or juice.',
     packSizes: [{ weight: '100 g', price: 55 }, { weight: '200 g', price: 100 }],
-    image: 'https://images.unsplash.com/photo-1541344999736-83eca272f6fc?w=400&q=80',
+    image: '/menu/pomegranate_peeled.png',
     category: 'cut',
     ingredients: ['Pomegranate'],
   },
@@ -201,7 +201,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Raw Mango Cut',
     description: 'Tangy raw mango cut and ready for pickle, chutney, or rice.',
     packSizes: [{ weight: '200 g', price: 40 }, { weight: '500 g', price: 90 }],
-    image: 'https://images.unsplash.com/photo-1601493700631-2851526337da?w=400&q=80',
+    image: '/menu/raw_mango_cut.png',
     category: 'cut',
     ingredients: ['Raw mango'],
   },
@@ -210,7 +210,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Muskmelon Cut',
     description: 'Sweet muskmelon deseeded and cut — a refreshing summer snack.',
     packSizes: [{ weight: '200 g', price: 40 }, { weight: '500 g', price: 90 }],
-    image: 'https://images.unsplash.com/photo-1571770095004-6b61b1cf308a?w=400&q=80',
+    image: '/menu/muskmelon_cut.png',
     category: 'cut',
     ingredients: ['Muskmelon'],
   },
@@ -219,7 +219,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Ripe Peeled Jackfruit',
     description: 'Ripe jackfruit segments peeled and cleaned — sweet, fragrant, effort-free.',
     packSizes: [{ weight: '250 g', price: 60 }, { weight: '500 g', price: 110 }],
-    image: 'https://images.unsplash.com/photo-1590005354167-6da97870c757?w=400&q=80',
+    image: '/menu/peeled_jackfruit.png',
     category: 'cut',
     ingredients: ['Jackfruit'],
   },
@@ -229,7 +229,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Brown Channa Sprouts',
     description: 'Freshly sprouted brown chickpeas — high protein, no cooking needed.',
     packSizes: [{ weight: '200 g', price: 50 }, { weight: '500 g', price: 115 }],
-    image: 'https://images.unsplash.com/photo-1562184552-997c461abbe6?w=400&q=80',
+    image: '/menu/brown_channa_sprouts.png',
     category: 'health', isNew: true,
     ingredients: ['Brown chickpeas'],
   },
@@ -238,7 +238,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Mixed Sprouts',
     description: 'A nutritious blend of sprouted lentils, chickpeas, and moong.',
     packSizes: [{ weight: '200 g', price: 50 }, { weight: '500 g', price: 115 }],
-    image: 'https://images.unsplash.com/photo-1562184552-997c461abbe6?w=400&q=80',
+    image: '/menu/mixed_sprouts.png',
     category: 'health', isBestseller: true,
     ingredients: ['Chickpeas', 'Moong', 'Lentils'],
   },
@@ -247,7 +247,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Green Moong Sprouts',
     description: 'Crisp green moong sprouts — great for salads, sundal, or a quick snack.',
     packSizes: [{ weight: '200 g', price: 45 }, { weight: '500 g', price: 100 }],
-    image: 'https://images.unsplash.com/photo-1562184552-997c461abbe6?w=400&q=80',
+    image: '/menu/green_moong_sprouts.png',
     category: 'health',
     ingredients: ['Green moong'],
   },
@@ -256,7 +256,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Salad Mix',
     description: 'A fresh blend of salad vegetables — cucumber, carrot, tomato, lettuce.',
     packSizes: [{ weight: '200 g', price: 55 }, { weight: '500 g', price: 120 }],
-    image: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&q=80',
+    image: '/menu/salad_mix.png',
     category: 'health',
     ingredients: ['Cucumber', 'Carrot', 'Tomato', 'Lettuce'],
   },
@@ -266,7 +266,7 @@ const DEFAULT_MENU_ITEMS: MenuItem[] = [
     name: 'Weekly Veggie Combo',
     description: 'Our handpicked combo of the freshest vegetables for the week — sambar mix, poriyal cut, sprouts and salad mix.',
     packSizes: [{ weight: '1 kg', price: 299, listPrice: 380 }],
-    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&q=80',
+    image: '/menu/weekly_veggie_combo.png',
     category: 'offers', isPreOrder: true, badge: 'Best Value',
     ingredients: ['Sambar mix', 'Poriyal mix', 'Mixed sprouts', 'Salad mix'],
   },
@@ -338,20 +338,20 @@ const sheetHeroImages: HeroImage[] = (heroBannerData as Record<string, unknown>[
 }));
 
 const DEFAULT_HERO_IMAGES: HeroImage[] = [
-  { id: '1', src: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1200&q=80', alt: 'Fresh colourful vegetables' },
-  { id: '2', src: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=1200&q=80', alt: 'Healthy salad bowl' },
-  { id: '3', src: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200&q=80', alt: 'Fresh produce on wooden surface' },
+  { id: '1', src: '/hero-banner/hero_1.png', alt: 'Fresh colourful vegetables' },
+  { id: '2', src: '/hero-banner/hero_2.png', alt: 'Healthy salad bowl' },
+  { id: '3', src: '/hero-banner/hero_3.png', alt: 'Fresh produce on wooden surface' },
 ];
 
 export const HERO_IMAGES: HeroImage[] = sheetHeroImages.length > 0 ? sheetHeroImages : DEFAULT_HERO_IMAGES;
 
 // Story steps
 export const STORY_STEPS: StoryStep[] = [
-  { id: '1', image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&q=80', titleKey: 'step1_title', captionKey: 'step1_desc' },
-  { id: '2', image: 'https://images.unsplash.com/photo-1465379944081-7f47de8d74ac?w=400&q=80', titleKey: 'step2_title', captionKey: 'step2_desc' },
-  { id: '3', image: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400&q=80', titleKey: 'step3_title', captionKey: 'step3_desc' },
-  { id: '4', image: 'https://images.unsplash.com/photo-1627483262769-04d0a1401487?w=400&q=80', titleKey: 'step4_title', captionKey: 'step4_desc' },
-  { id: '5', image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&q=80', titleKey: 'step5_title', captionKey: 'step5_desc' },
+  { id: '1', image: '/story/story_1.png', titleKey: 'step1_title', captionKey: 'step1_desc' },
+  { id: '2', image: '/story/story_2.png', titleKey: 'step2_title', captionKey: 'step2_desc' },
+  { id: '3', image: '/story/story_3.png', titleKey: 'step3_title', captionKey: 'step3_desc' },
+  { id: '4', image: '/story/story_4.jpg', titleKey: 'step4_title', captionKey: 'step4_desc' },
+  { id: '5', image: '/story/story_5.jpg', titleKey: 'step5_title', captionKey: 'step5_desc' },
 ];
 
 // Instagram posts
