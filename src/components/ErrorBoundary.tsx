@@ -1,4 +1,5 @@
 import React, { Component, ErrorInfo, ReactNode } from 'react';
+import { track } from '../utils/analytics';
 
 interface Props {
   children: ReactNode;
@@ -20,6 +21,7 @@ class ErrorBoundary extends Component<Props, State> {
 
   public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
     console.error('Uncaught error:', error, errorInfo);
+    track('client_error', { message: error.message, stack: error.stack?.slice(0, 500) });
   }
 
   public render() {

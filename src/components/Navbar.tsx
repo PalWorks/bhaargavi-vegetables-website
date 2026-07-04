@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingBag, Menu, X, MessageCircle, Languages } from 'lucide-react';
+import { ShoppingBag, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { LOGO_SRC, WA_NUMBER } from '../constants';
@@ -60,19 +60,22 @@ const Navbar: React.FC = () => {
             {/* Language Switcher */}
             <button onClick={toggleLanguage}
               className="flex items-center text-bv-dark hover:text-bv-green transition-all"
+              aria-label="Change language"
               title="Change Language">
-              <img src="/Tamil-English Translation Icon.png" alt="Translate" className="w-6 h-6 object-contain" />
+              <img src="/Tamil-English Translation Icon.png" alt="" className="w-6 h-6 object-contain" />
             </button>
 
             {/* WhatsApp CTA */}
             <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer"
               className="flex items-center justify-center text-bv-dark hover:text-[#25D366] transition-colors"
+              aria-label={t.nav.order}
               title={t.nav.order}>
-              <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-6 h-6 object-contain" />
+              <img src="/WhatsApp Icon.png" alt="" className="w-6 h-6 object-contain" />
             </a>
 
             {/* Cart */}
             <button onClick={toggleCart}
+              aria-label={`${t.cart.title}${cartCount > 0 ? `, ${cartCount} ${t.cart.items}` : ''}`}
               className="relative text-bv-dark hover:text-bv-green transition-colors">
               <ShoppingBag size={24} />
               {cartCount > 0 && (
@@ -84,6 +87,8 @@ const Navbar: React.FC = () => {
 
             {/* Mobile menu */}
             <button onClick={() => setIsMobileOpen(v => !v)}
+              aria-label={isMobileOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isMobileOpen}
               className="lg:hidden text-bv-dark hover:text-bv-green transition-colors">
               {isMobileOpen ? <X size={24} /> : <Menu size={24} />}
             </button>

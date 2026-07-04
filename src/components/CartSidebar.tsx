@@ -3,17 +3,20 @@ import { X, Plus, Minus, ShoppingBag, Info, ChevronDown, AlertCircle, MapPin } f
 import { useCart, buildWhatsAppMessage, recordOrder } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { SITE_CONFIG, WA_NUMBER } from '../constants';
+import { track } from '../utils/analytics';
 
 const CartSidebar: React.FC = () => {
-  const { isCartOpen, toggleCart, items, updateQuantity, removeFromCart, updateCustomNote, cartTotal, isBelowMinimum, amountNeeded } = useCart();
+  const { isCartOpen, toggleCart, items, updateQuantity, removeFromCart, cartTotal, isBelowMinimum, amountNeeded } = useCart();
   const { t } = useLanguage();
   const sidebarRef = useRef<HTMLDivElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isAddressOpen, setIsAddressOpen] = useState(true);
   const [address, setAddress] = useState('');
   const [addressError, setAddressError] = useState(false);
-  const [editingNote, setEditingNote] = useState<string | null>(null);
   const [isDetailsExpanded, setIsDetailsExpanded] = useState(true);
+  const [waFallbackUrl, setWaFallbackUrl] = useState<string | null>(null);
   const totalItemsCount = items.reduce((s, i) => s + i.quantity, 0);
 
   useEffect(() => { setIsInfoOpen(items.length <= 2); }, [items.length]);
@@ -32,18 +35,45 @@ const CartSidebar: React.FC = () => {
     };
   }, [isCartOpen, toggleCart]);
 
-  const handleCheckout = async () => {
+  // Accessibility: Escape closes, focus is trapped inside the drawer, and focus is
+  // moved into the drawer on open and restored to the trigger on close.
+  useEffect(() => {
+    if (!isCartOpen) return;
+
+    lastFocusedRef.current = document.activeElement as HTMLElement | null;
+    const focusTimer = window.setTimeout(() => closeBtnRef.current?.focus(), 0);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { e.preventDefault(); toggleCart(); return; }
+      if (e.key !== 'Tab' || !sidebarRef.current) return;
+      const focusables = sidebarRef.current.querySelectorAll<HTMLElement>(
+        'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusables.length === 0) return;
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.clearTimeout(focusTimer);
+      document.removeEventListener('keydown', handleKeyDown);
+      lastFocusedRef.current?.focus?.();
+    };
+  }, [isCartOpen, toggleCart]);
+
+  const handleCheckout = () => {
     if (items.length === 0 || isBelowMinimum) return;
-    
+
     if (address.trim() === '') {
       setAddressError(true);
       setIsAddressOpen(true);
       return;
     }
     setAddressError(false);
-
-    // Record order best-effort before opening WhatsApp
-    await recordOrder(items, cartTotal, address.trim());
+    setWaFallbackUrl(null);
 
     const message = buildWhatsAppMessage(
       items, cartTotal,
@@ -52,8 +82,17 @@ const CartSidebar: React.FC = () => {
       t.cart.whatsapp_custom_note,
       address.trim()
     );
+    const url = `https://wa.me/${WA_NUMBER}?text=${message}`;
 
-    window.open(`https://wa.me/${WA_NUMBER}?text=${message}`, '_blank');
+    // Open WhatsApp synchronously inside the click gesture so mobile popup blockers
+    // don't reject it. If it's still blocked (returns null), surface a manual link.
+    const win = window.open(url, '_blank');
+    if (!win) setWaFallbackUrl(url);
+
+    track('checkout_click', { total: cartTotal, itemCount: totalItemsCount });
+
+    // Best-effort order log — fire and forget so it never blocks the WhatsApp handoff.
+    void recordOrder(items, cartTotal, address.trim());
   };
 
   const progressPct = Math.min(100, (cartTotal / SITE_CONFIG.minOrderValue) * 100);
@@ -61,10 +100,14 @@ const CartSidebar: React.FC = () => {
   return (
     <>
       {/* Overlay */}
-      <div className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 ${isCartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} />
+      <div aria-hidden="true" className={`fixed inset-0 bg-black/50 z-50 transition-opacity duration-300 ${isCartOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`} />
 
       {/* Sidebar */}
       <div ref={sidebarRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t.cart.title}
+        aria-hidden={!isCartOpen}
         className={`fixed top-0 right-0 h-full w-full max-w-md bg-white z-[60] shadow-2xl transform transition-transform duration-300 ease-in-out flex flex-col ${isCartOpen ? 'translate-x-0' : 'translate-x-full'}`}>
 
         {/* Header */}
@@ -76,7 +119,7 @@ const CartSidebar: React.FC = () => {
               <span className="text-base font-medium text-bv-muted">({totalItemsCount} {t.cart.items})</span>
             )}
           </h2>
-          <button onClick={toggleCart} className="p-2 hover:bg-bv-green-pale rounded-full transition-colors">
+          <button ref={closeBtnRef} onClick={toggleCart} aria-label="Close cart" className="p-2 hover:bg-bv-green-pale rounded-full transition-colors">
             <X size={22} />
           </button>
         </div>
@@ -128,21 +171,6 @@ const CartSidebar: React.FC = () => {
                           </button>
                         </div>
                       </div>
-
-                      {/* Custom note - Temporarily disabled
-                      {editingNote === key ? (
-                        <input type="text" defaultValue={item.customNote || ''}
-                          autoFocus
-                          onBlur={e => { updateCustomNote(item.id, item.weight, e.target.value); setEditingNote(null); }}
-                          placeholder={t.products.custom_size_placeholder}
-                          className="mt-2 w-full text-xs border border-bv-border rounded px-2 py-1 focus:outline-none focus:border-bv-green" />
-                      ) : (
-                        <button onClick={() => setEditingNote(key)}
-                          className="mt-1 text-xs text-bv-green underline underline-offset-2">
-                          {item.customNote || t.cart.custom_note_label}
-                        </button>
-                      )}
-                      */}
                     </div>
                   </div>
                 );
@@ -249,6 +277,14 @@ const CartSidebar: React.FC = () => {
                 ? t.cart.min_order.replace('{amount}', String(SITE_CONFIG.minOrderValue))
                 : t.cart.checkout}
             </button>
+
+            {/* Fallback if the browser blocked the WhatsApp popup */}
+            {waFallbackUrl && (
+              <a href={waFallbackUrl} target="_blank" rel="noreferrer"
+                className="mt-3 block w-full text-center py-3 rounded-xl font-semibold text-sm bg-bv-green-pale text-bv-green underline underline-offset-2">
+                Tap here to open WhatsApp and send your order
+              </a>
+            )}
           </div>
         )}
       </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { CartItem } from '../types';
 import { SITE_CONFIG, WA_NUMBER } from '../constants';
 
@@ -8,7 +8,6 @@ interface CartContextType {
   addToCart: (item: CartItem) => void;
   removeFromCart: (itemId: string, weight: string) => void;
   updateQuantity: (itemId: string, weight: string, delta: number) => void;
-  updateCustomNote: (itemId: string, weight: string, note: string) => void;
   clearCart: () => void;
   toggleCart: () => void;
   cartTotal: number;
@@ -80,14 +79,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     );
   };
 
-  const updateCustomNote = (id: string, weight: string, note: string) => {
-    setItems(prev =>
-      prev.map(i => itemKey(i.id, i.weight) === itemKey(id, weight) ? { ...i, customNote: note } : i)
-    );
-  };
-
   const clearCart = () => setItems([]);
-  const toggleCart = () => setIsCartOpen(prev => !prev);
+  // Stable identity: consumed by CartSidebar effects (outside-click, Escape/focus-trap) whose
+  // dependency arrays include it — an unstable toggleCart would re-run them on every keystroke.
+  const toggleCart = useCallback(() => setIsCartOpen(prev => !prev), []);
 
   const cartTotal = items.reduce((sum, i) => sum + i.price * i.quantity, 0);
   const cartCount = items.reduce((sum, i) => sum + i.quantity, 0);
@@ -97,7 +92,7 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   return (
     <CartContext.Provider value={{
       items, isCartOpen, addToCart, removeFromCart, updateQuantity,
-      updateCustomNote, clearCart, toggleCart,
+      clearCart, toggleCart,
       cartTotal, cartCount, isBelowMinimum, amountNeeded,
     }}>
       {children}

@@ -21,8 +21,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const { t } = useLanguage();
   const { addToCart, items } = useCart();
   const [selectedSize, setSelectedSize] = useState<PackSize>(item.packSizes[0]);
-  const [showNoteInput, setShowNoteInput] = useState(false);
-  const [customNote, setCustomNote] = useState('');
 
   const cartKey = `${item.id}__${selectedSize.weight}`;
   const inCart = items.find(i => `${i.id}__${i.weight}` === cartKey);
@@ -35,7 +33,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       price: selectedSize.price,
       weight: selectedSize.weight,
       quantity: 1,
-      customNote: customNote || undefined,
     });
   };
 
@@ -99,17 +96,6 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           )}
         </div>
 
-        {/* Custom note toggle - Temporarily Disabled 
-        <button onClick={() => setShowNoteInput(v => !v)}
-          className="text-xs text-bv-green underline underline-offset-2 mb-2 text-left hover:text-bv-green-light transition-colors">
-          {t.products.custom_size}
-        </button>
-        {showNoteInput && (
-          <input type="text" value={customNote} onChange={e => setCustomNote(e.target.value)}
-            placeholder={t.products.custom_size_placeholder}
-            className="text-xs border border-bv-border rounded-lg px-3 py-2 mb-3 w-full focus:outline-none focus:border-bv-green focus:ring-1 focus:ring-bv-green/20" />
-        )}
-        */}
 
         {/* Add to cart */}
         {item.isSoldOut ? (

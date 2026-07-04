@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { MessageCircle, MapPin, Phone, Mail, Instagram, ExternalLink, ChevronDown } from 'lucide-react';
+import { MapPin, Mail, Instagram, ExternalLink, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
 import { LOGO_SRC, WA_NUMBER, CONTACT_PHONE_DISPLAY, EMAIL, INSTAGRAM_URL, ADDRESS, GOOGLE_MAPS_URL } from '../constants';
 
