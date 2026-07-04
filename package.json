@@ -15,6 +15,7 @@
     "fetch:config": "node scripts/fetch-config.cjs",
     "fetch:images": "node scripts/fetch-images.cjs",
     "fetch:instagram": "node scripts/fetch-instagram.cjs",
+    "extract:hero": "node scripts/extract-hero-frames.cjs",
     "fetch:all": "npm run fetch:config && npm run fetch:menu && npm run fetch:images && npm run fetch:instagram"
   },
   "dependencies": {

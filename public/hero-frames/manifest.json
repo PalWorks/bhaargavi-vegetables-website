@@ -1,0 +1,7 @@
+{
+  "count": 96,
+  "width": 1280,
+  "height": 720,
+  "pattern": "frame_%03d.jpg",
+  "ext": "jpg"
+}
