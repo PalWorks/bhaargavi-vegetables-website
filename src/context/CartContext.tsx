@@ -150,7 +150,11 @@ export const recordOrder = async (items: CartItem[], cartTotal: number, delivery
         orderId,
         timestamp: istTimestamp,
         items: itemsSummary,
+        // Structured lines let the Apps Script recompute the total from the catalog
+        // server-side (independent of the client-reported price).
+        lines: items.map(i => ({ name: i.name, weight: i.weight, quantity: i.quantity, unitPrice: i.price })),
         total: cartTotal,
+        clientTotal: cartTotal,
         customNote: customNotes || '',
         address: deliveryAddress,
         status: 'New',

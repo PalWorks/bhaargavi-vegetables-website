@@ -1,7 +1,7 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import React from 'react';
-import { CartProvider, useCart, buildWhatsAppMessage } from './CartContext';
+import { CartProvider, useCart, buildWhatsAppMessage, recordOrder } from './CartContext';
 import { CartItem } from '../types';
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <CartProvider>{children}</CartProvider>;
@@ -102,6 +102,34 @@ describe('localStorage hydration', () => {
     localStorage.setItem('bhaargavi-cart', 'not-json');
     const { result } = renderHook(() => useCart(), { wrapper });
     expect(result.current.items).toHaveLength(0);
+  });
+
+  it('does nothing when no webhook endpoint is configured', async () => {
+    const fetchMock = vi.fn();
+    vi.stubGlobal('fetch', fetchMock);
+    vi.stubEnv('VITE_APPS_SCRIPT_URL', '');
+    await recordOrder([item()], 40, 'addr');
+    expect(fetchMock).not.toHaveBeenCalled();
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+  });
+
+  it('posts structured lines + client total to the order webhook', async () => {
+    vi.stubEnv('VITE_APPS_SCRIPT_URL', 'https://script.example/exec');
+    const fetchMock = vi.fn().mockResolvedValue(undefined);
+    vi.stubGlobal('fetch', fetchMock);
+
+    await recordOrder([item({ price: 40, quantity: 2 })], 80, '12 Main St');
+
+    expect(fetchMock).toHaveBeenCalledTimes(1);
+    const body = JSON.parse(fetchMock.mock.calls[0][1].body);
+    expect(body.clientTotal).toBe(80);
+    expect(body.total).toBe(80);
+    expect(body.lines).toEqual([{ name: 'Carrot Cut', weight: '250 g', quantity: 2, unitPrice: 40 }]);
+    expect(body.address).toBe('12 Main St');
+
+    vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
   });
 
   it('re-derives a tampered persisted price from the catalog on hydration', () => {
