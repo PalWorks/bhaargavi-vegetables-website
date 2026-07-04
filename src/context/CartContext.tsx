@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { CartItem } from '../types';
-import { SITE_CONFIG, CONTACT_PHONE } from '../constants';
+import { SITE_CONFIG, WA_NUMBER } from '../constants';
 
 interface CartContextType {
   items: CartItem[];
@@ -155,7 +155,7 @@ export const recordOrder = async (items: CartItem[], cartTotal: number, delivery
         customNote: customNotes || '',
         address: deliveryAddress,
         status: 'New',
-        waNumber: CONTACT_PHONE,
+        waNumber: WA_NUMBER,
       }),
     });
   } catch {

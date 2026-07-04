@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MessageCircle, MapPin, Phone, Mail, Instagram, ExternalLink, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { LOGO_SRC, CONTACT_PHONE, CONTACT_PHONE_DISPLAY, EMAIL, INSTAGRAM_URL, ADDRESS, GOOGLE_MAPS_URL } from '../constants';
+import { LOGO_SRC, WA_NUMBER, CONTACT_PHONE_DISPLAY, EMAIL, INSTAGRAM_URL, ADDRESS, GOOGLE_MAPS_URL } from '../constants';
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();
@@ -89,7 +89,7 @@ const Footer: React.FC = () => {
               </summary>
               <ul className="space-y-2.5 pb-4 sm:pb-0">
                 <li>
-                  <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
+                  <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer"
                     className="flex items-center gap-2 text-sm text-white/80 hover:text-[#25D366] transition-colors">
                     <img loading="lazy" src="/WhatsApp Icon.png" alt="WhatsApp" className="w-4 h-4 object-contain opacity-80 shrink-0" />
                     <span>{CONTACT_PHONE_DISPLAY}</span>

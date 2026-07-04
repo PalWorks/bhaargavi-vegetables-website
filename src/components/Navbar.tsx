@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { ShoppingBag, Menu, X, MessageCircle, Languages } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
-import { LOGO_SRC, CONTACT_PHONE } from '../constants';
+import { LOGO_SRC, WA_NUMBER } from '../constants';
 
 const Navbar: React.FC = () => {
   const { cartCount, toggleCart } = useCart();
@@ -65,7 +65,7 @@ const Navbar: React.FC = () => {
             </button>
 
             {/* WhatsApp CTA */}
-            <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
+            <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer"
               className="flex items-center justify-center text-bv-dark hover:text-[#25D366] transition-colors"
               title={t.nav.order}>
               <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-6 h-6 object-contain" />
@@ -107,7 +107,7 @@ const Navbar: React.FC = () => {
                 <img src="/Tamil-English Translation Icon.png" alt="Translate" className="w-5 h-5 object-contain" />
                 {langLabels[language]}
               </button>
-              <a href={`https://wa.me/${CONTACT_PHONE}`} target="_blank" rel="noreferrer"
+              <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer"
                 className="flex items-center justify-center gap-2 text-sm font-bold text-bv-dark border border-[#25D366] rounded-full px-4 py-1.5 hover:bg-[#25D366] hover:text-white transition-all">
                 <img src="/WhatsApp Icon.png" alt="WhatsApp" className="w-6 h-6 object-contain" />
                 {t.nav.order}

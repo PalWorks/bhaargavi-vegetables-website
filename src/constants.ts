@@ -18,6 +18,11 @@ export const FSSAI_REG = '22426075000434';
 // Site config sourced from Sheet 2 via fetch-config.cjs
 export const SITE_CONFIG: SiteConfig = configData as SiteConfig;
 
+// Single source of truth for the WhatsApp number used in every wa.me link and the order log.
+// Prefers the Sheet-managed value (SITE_CONFIG.waNumber) so the owner can change it without a
+// code edit; falls back to the hardcoded constant if the config value is ever missing.
+export const WA_NUMBER = (SITE_CONFIG.waNumber && String(SITE_CONFIG.waNumber).trim()) || CONTACT_PHONE;
+
 // Default products (fallback when menu.json is empty)
 const DEFAULT_MENU_ITEMS: MenuItem[] = [
   {

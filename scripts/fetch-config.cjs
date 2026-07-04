@@ -34,7 +34,7 @@ https.get(url, res => {
         waNumber: '916385114580',
         deliveryDays: 'Monday to Saturday',
         deliveryHours: '6 AM to 8 PM',
-        deliveryNote: 'Orders above Rs 199 are eligible for free delivery within our service area.',
+        deliveryNote: 'Orders above Rs 199 are eligible for delivery within our service area.',
       };
       const merged = { ...defaults, ...config };
       fs.writeFileSync(OUTPUT, JSON.stringify(merged, null, 2));

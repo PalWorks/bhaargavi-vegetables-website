@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { X, Plus, Minus, ShoppingBag, Info, ChevronDown, AlertCircle, MapPin } from 'lucide-react';
 import { useCart, buildWhatsAppMessage, recordOrder } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
-import { SITE_CONFIG, CONTACT_PHONE } from '../constants';
+import { SITE_CONFIG, WA_NUMBER } from '../constants';
 
 const CartSidebar: React.FC = () => {
   const { isCartOpen, toggleCart, items, updateQuantity, removeFromCart, updateCustomNote, cartTotal, isBelowMinimum, amountNeeded } = useCart();
@@ -53,7 +53,7 @@ const CartSidebar: React.FC = () => {
       address.trim()
     );
 
-    window.open(`https://wa.me/${CONTACT_PHONE}?text=${message}`, '_blank');
+    window.open(`https://wa.me/${WA_NUMBER}?text=${message}`, '_blank');
   };
 
   const progressPct = Math.min(100, (cartTotal / SITE_CONFIG.minOrderValue) * 100);
