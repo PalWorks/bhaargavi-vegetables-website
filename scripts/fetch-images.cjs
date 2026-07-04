@@ -21,7 +21,7 @@ const http = require('http');
 
 // ─── Configuration ───────────────────────────────────────────────────────────
 const API_KEY = process.env.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY;
-const SHEET_ID = '18Yadl4c243IPOgAOCXCJ-o61t2EITww7Uxg7roHxMpY';
+const SHEET_ID = process.env.BHAARGAVI_SHEETS_ID || '1Ao_1pGEsPkCRgtOho02ZqaAUOsMUiuJiaTEsLbPHQW8';
 
 // Sheet ranges: columns A through C for HeroBanner, A through D for Testimonials
 const HERO_BANNER_RANGE = 'HeroBanner!A:C';      // Sorting Order, Image, Alt Text
@@ -32,6 +32,8 @@ const HERO_BANNER_DATA_FILE = path.join(__dirname, '../src/data/hero-banner.json
 const TESTIMONIALS_DATA_FILE = path.join(__dirname, '../src/data/testimonials.json');
 const HERO_BANNER_IMAGE_DIR = path.join(__dirname, '../public/hero-banner');
 const TESTIMONIALS_IMAGE_DIR = path.join(__dirname, '../public/testimonials');
+const MENU_DATA_FILE = path.join(__dirname, '../src/data/menu.json');
+const MENU_IMAGE_DIR = path.join(__dirname, '../public/menu');
 
 // Default color palette for testimonial card borders (cycles when no color specified)
 const DEFAULT_COLORS = ['#0ea5e9', '#fbbf24', '#f43f5e', '#8b5cf6', '#14b8a6'];
@@ -121,6 +123,19 @@ function isValidImage(filepath) {
     return isJpeg || isPng;
 }
 
+/**
+ * Detects the image type from a Buffer's magic bytes and returns a file extension,
+ * or null if the buffer is not a recognised image (e.g. a Drive HTML error page).
+ */
+function magicExtension(buf) {
+    if (buf.length > 2 && buf[0] === 0xFF && buf[1] === 0xD8) return 'jpg';
+    if (buf.length > 4 && buf[0] === 0x89 && buf[1] === 0x50) return 'png';
+    if (buf.length > 12 && buf.toString('ascii', 0, 4) === 'RIFF' && buf.toString('ascii', 8, 12) === 'WEBP') return 'webp';
+    return null;
+}
+
+const isRemoteUrl = (url) => /^https?:\/\//i.test(url);
+
 // ─── Sheet Fetching ──────────────────────────────────────────────────────────
 
 /**
@@ -166,7 +181,7 @@ function parseHeroBannerRows(rows) {
         .map(row => {
             const sortingOrder = parseInt(row[0] || '0', 10);
             const image = (row[1] || '').trim();
-            const altText = (row[2] || 'Tome Cafe hero image').trim();
+            const altText = (row[2] || 'Bhaargavi Fresh Cuts hero image').trim();
 
             return {
                 id: String(sortingOrder),
@@ -293,6 +308,68 @@ async function processTestimonialsImages(items) {
     }
 }
 
+// ─── Product (Menu) Image Processing ─────────────────────────────────────────
+
+/**
+ * Localizes product images referenced in src/data/menu.json.
+ *
+ * fetch-menu.cjs writes remote image URLs (typically Google Drive) into menu.json.
+ * Drive hotlinks are unreliable and are blocked by the site CSP (img-src 'self'),
+ * so here we download each remote image into public/menu/ and rewrite the JSON to
+ * point at the local, same-origin copy. Failures are non-fatal: the original URL is
+ * kept and the UI falls back to the logo via onError.
+ */
+async function processMenuImages() {
+    let items;
+    try {
+        items = JSON.parse(fs.readFileSync(MENU_DATA_FILE, 'utf8'));
+    } catch {
+        console.log('  ⚠ menu.json missing or invalid. Skipping product image localization.');
+        return;
+    }
+    if (!Array.isArray(items) || items.length === 0) {
+        console.log('  ⚠ menu.json is empty. Nothing to localize (site uses the fallback catalog).');
+        return;
+    }
+
+    if (!fs.existsSync(MENU_IMAGE_DIR)) fs.mkdirSync(MENU_IMAGE_DIR, { recursive: true });
+
+    let changed = 0;
+    for (const item of items) {
+        const url = (item.image || '').trim();
+        if (!url || url.startsWith('/')) continue;   // blank or already local
+        if (!isRemoteUrl(url)) continue;             // not an http(s) URL
+
+        let downloadUrl = url;
+        if (isDriveUrl(url)) {
+            const fileId = extractDriveFileId(url);
+            if (!fileId) { console.warn(`    [Product ${item.id}] Could not extract Drive ID from ${url}`); continue; }
+            downloadUrl = `https://drive.google.com/uc?export=download&id=${fileId}`;
+        }
+
+        const slug = String(item.id || '0').padStart(2, '0');
+        try {
+            const buffer = await httpsGet(downloadUrl);
+            const ext = magicExtension(buffer);
+            if (!ext) throw new Error('response is not a valid image (likely an HTML error/confirmation page)');
+            const filename = `product-${slug}.${ext}`;
+            fs.writeFileSync(path.join(MENU_IMAGE_DIR, filename), buffer);
+            item.image = `/menu/${filename}`;
+            changed++;
+            console.log(`    [Product ${item.id}] ✓ ${item.image}`);
+        } catch (err) {
+            console.error(`    [Product ${item.id}] ✗ ${err.message} — keeping ${url}`);
+        }
+    }
+
+    if (changed > 0) {
+        fs.writeFileSync(MENU_DATA_FILE, JSON.stringify(items, null, 2));
+        console.log(`\n  ✅ Localized ${changed} product image(s); rewrote ${path.relative(process.cwd(), MENU_DATA_FILE)}`);
+    } else {
+        console.log('  ℹ No remote product images to localize.');
+    }
+}
+
 // ─── Main ────────────────────────────────────────────────────────────────────
 
 async function main() {
@@ -354,6 +431,10 @@ async function main() {
     } else {
         console.log('  ⚠ Testimonials tab not found or empty. Keeping existing JSON.');
     }
+
+    // ── 3. Product (Menu) Images ─────────────────────────────────────────────
+    console.log('\n┌─ Product Images ───────────────────────────────');
+    await processMenuImages();
 
     console.log('\n═══════════════════════════════════════════════');
     console.log('  Done!');
