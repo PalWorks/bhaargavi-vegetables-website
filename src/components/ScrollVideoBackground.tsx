@@ -31,6 +31,7 @@ const ScrollVideoBackground: React.FC = () => {
     let animationFrameId: number;
     let targetFraction = 0;
     let currentFraction = 0;
+    let hasSetInitialFrame = false;
 
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -44,12 +45,13 @@ const ScrollVideoBackground: React.FC = () => {
       // Lerp (smooth interpolation) from current to target
       currentFraction += (targetFraction - currentFraction) * 0.08;
 
-      if (videoRef.current && videoRef.current.duration) {
+      if (videoRef.current && !Number.isNaN(videoRef.current.duration)) {
         const targetTime = videoRef.current.duration * currentFraction;
         // Only update if difference is noticeable, to prevent micro-stutters
-        // Also force an update if currentTime is exactly 0 to ensure the first frame is painted
-        if (Math.abs(videoRef.current.currentTime - targetTime) > 0.05 || videoRef.current.currentTime === 0) {
+        // Also force exactly once to ensure the first frame is painted
+        if (Math.abs(videoRef.current.currentTime - targetTime) > 0.05 || !hasSetInitialFrame) {
           videoRef.current.currentTime = targetTime || 0.001;
+          hasSetInitialFrame = true;
         }
       }
       animationFrameId = requestAnimationFrame(renderLoop);
