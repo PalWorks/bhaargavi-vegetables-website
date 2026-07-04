@@ -1,7 +1,7 @@
 import React from 'react';
 import { ShieldCheck, Droplets, Thermometer, Wind, Leaf, Package, Phone, MapPin, ExternalLink, CheckCircle } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { LOGO_SRC, FSSAI_REG, ADDRESS, CONTACT_PHONE_DISPLAY, EMAIL, GOOGLE_MAPS_URL, STORY_STEPS } from '../constants';
+import { LOGO_SRC, FSSAI_REG, ADDRESS, CONTACT_PHONE_DISPLAY, GOOGLE_MAPS_URL, STORY_STEPS } from '../constants';
 
 const QualityBadge: React.FC<{ icon: React.ReactNode; title: string; desc: string }> = ({ icon, title, desc }) => (
   <div className="bg-white rounded-2xl p-5 border border-bv-border shadow-sm flex flex-col items-center text-center hover:shadow-md transition-shadow">

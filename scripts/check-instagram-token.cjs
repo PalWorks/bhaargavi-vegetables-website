@@ -39,7 +39,7 @@ function httpsGetJson(url) {
             res.on('end', () => {
                 try {
                     resolve({ statusCode: res.statusCode, data: JSON.parse(body) });
-                } catch (e) {
+                } catch {
                     reject(new Error(`Failed to parse response: ${body}`));
                 }
             });

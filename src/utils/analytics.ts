@@ -20,7 +20,6 @@ export type AnalyticsEvent =
 export function track(event: AnalyticsEvent, data: Record<string, unknown> = {}): void {
   // Always give developers a console signal in dev, even without an endpoint.
   if (import.meta.env.DEV) {
-    // eslint-disable-next-line no-console
     console.debug(`[analytics] ${event}`, data);
   }
   if (!ENDPOINT) return;

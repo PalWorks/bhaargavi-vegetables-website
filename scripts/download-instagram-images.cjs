@@ -45,7 +45,7 @@ const downloadFile = (url, filepath, redirectCount = 0) => {
 
             if (res.statusCode === 200) {
                 const cleanup = (err) => {
-                    try { fs.unlinkSync(filepath); } catch (_) { }
+                    try { fs.unlinkSync(filepath); } catch { /* partial file may not exist */ }
                     reject(err);
                 };
                 const stream = fs.createWriteStream(filepath);
