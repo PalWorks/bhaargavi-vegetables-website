@@ -92,16 +92,28 @@ jobs:
           # This avoids rebase conflicts when other commits land during the
           # ~8 minute data-fetch window.
           git pull origin main
-          git add src/data/ public/menu public/hero-banner public/testimonials
+          git add src/data/ 2>/dev/null || true
+          # Stage image dirs only if they exist (they are created on demand by the fetch steps)
+          for d in public/menu public/hero-banner public/testimonials; do [ -d "$d" ] && git add "$d"; done
           # Only commit and push if there are actual changes
           git diff --staged --quiet || (git commit -m "chore: weekly sync - instagram feed, menu data & carousel images" && git push)
 
-      # --- Build and Deploy to Cloudflare Pages ---
+      # --- Install, Test, Audit, Build, Deploy ---
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run unit tests
+        run: npx vitest run
+
+      - name: Security audit (advisory, non-blocking)
+        run: npm audit --audit-level=high || true
 
       - name: Build Web App
         env:
           VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
-        run: npm ci && npm run build
+          VITE_GOOGLE_PLACE_ID: ${{ secrets.VITE_GOOGLE_PLACE_ID }}
+        run: npm run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
