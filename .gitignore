@@ -31,3 +31,6 @@ public/instagram/
 .agent/
 _agents/
 _agent/
+
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
