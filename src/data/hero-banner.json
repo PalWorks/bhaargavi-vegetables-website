@@ -1,17 +1,1 @@
-[
-  {
-    "id": "1",
-    "src": "/hero-banner/hero-1.jpg",
-    "alt": "Delicious Stack of Japanese Sandwiches"
-  },
-  {
-    "id": "2",
-    "src": "/hero-banner/hero-2.jpg",
-    "alt": "Vegetarian Sando Option"
-  },
-  {
-    "id": "3",
-    "src": "/hero-banner/hero-3.jpg",
-    "alt": "Non-Vegetarian Sando Option"
-  }
-]
+[]

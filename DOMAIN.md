@@ -11,7 +11,7 @@ Bhaargavi Fresh Cuts provides premium, ready-to-cook, pre-cut vegetables and fru
 - **Health Packs:** Specialized mixes (e.g., sprout mixes, salad boxes).
 
 ## Operational Rules
-- **Minimum Order:** ₹ 190. The system must prevent checkout below this amount.
+- **Minimum Order:** ₹ 199. The system must prevent checkout below this amount.
 - **Delivery Area:** Chennai exclusively.
 - **Order Timing:** Next day delivery for orders placed before 8 PM.
 - **Checkout Mode:** WhatsApp exclusively. No credit card or UPI gateway is hosted on the site.
