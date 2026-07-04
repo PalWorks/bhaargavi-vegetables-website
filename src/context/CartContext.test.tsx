@@ -103,4 +103,14 @@ describe('localStorage hydration', () => {
     const { result } = renderHook(() => useCart(), { wrapper });
     expect(result.current.items).toHaveLength(0);
   });
+
+  it('re-derives a tampered persisted price from the catalog on hydration', () => {
+    // Catalog SKU id '1' (Sambar Onion Peeled) is ₹35 for 200 g in the fallback catalog.
+    localStorage.setItem('bhaargavi-cart', JSON.stringify([
+      { id: '1', name: 'Sambar Onion Peeled', image: '', price: 1, weight: '200 g', quantity: 1 },
+    ]));
+    const { result } = renderHook(() => useCart(), { wrapper });
+    expect(result.current.items[0].price).toBe(35);
+    expect(result.current.cartTotal).toBe(35);
+  });
 });

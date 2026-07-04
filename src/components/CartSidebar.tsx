@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { X, Plus, Minus, ShoppingBag, Info, ChevronDown, AlertCircle, MapPin } from 'lucide-react';
 import { useCart, buildWhatsAppMessage, recordOrder } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
-import { SITE_CONFIG, WA_NUMBER } from '../constants';
+import { SITE_CONFIG, WA_NUMBER, MENU_ITEMS } from '../constants';
 import { track } from '../utils/analytics';
+import { reconcileCartPrices } from '../utils/pricing';
 
 const CartSidebar: React.FC = () => {
   const { isCartOpen, toggleCart, items, updateQuantity, removeFromCart, cartTotal, isBelowMinimum, amountNeeded } = useCart();
@@ -75,8 +76,12 @@ const CartSidebar: React.FC = () => {
     setAddressError(false);
     setWaFallbackUrl(null);
 
+    // Authoritative prices from the catalog, not the (potentially tampered) persisted cart.
+    const { items: safeItems } = reconcileCartPrices(items, MENU_ITEMS);
+    const safeTotal = safeItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
+
     const message = buildWhatsAppMessage(
-      items, cartTotal,
+      safeItems, safeTotal,
       t.cart.whatsapp_greeting,
       t.cart.whatsapp_confirm,
       t.cart.whatsapp_custom_note,
@@ -89,10 +94,10 @@ const CartSidebar: React.FC = () => {
     const win = window.open(url, '_blank');
     if (!win) setWaFallbackUrl(url);
 
-    track('checkout_click', { total: cartTotal, itemCount: totalItemsCount });
+    track('checkout_click', { total: safeTotal, itemCount: totalItemsCount });
 
     // Best-effort order log — fire and forget so it never blocks the WhatsApp handoff.
-    void recordOrder(items, cartTotal, address.trim());
+    void recordOrder(safeItems, safeTotal, address.trim());
   };
 
   const progressPct = Math.min(100, (cartTotal / SITE_CONFIG.minOrderValue) * 100);

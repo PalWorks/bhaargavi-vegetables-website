@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from 'react';
 import { CartItem } from '../types';
-import { SITE_CONFIG, WA_NUMBER } from '../constants';
+import { SITE_CONFIG, WA_NUMBER, MENU_ITEMS } from '../constants';
+import { reconcileCartPrices } from '../utils/pricing';
 
 interface CartContextType {
   items: CartItem[];
@@ -37,7 +38,10 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           typeof i.quantity === 'number' && !isNaN(i.quantity) &&
           typeof i.weight === 'string'
         )) {
-          setItems(parsed);
+          // Re-derive prices from the catalog so a tampered/stale persisted price can't
+          // drive the displayed total or the minimum-order gate.
+          const { items: reconciled } = reconcileCartPrices(parsed as CartItem[], MENU_ITEMS);
+          setItems(reconciled);
         } else {
           localStorage.removeItem(CART_KEY);
         }
