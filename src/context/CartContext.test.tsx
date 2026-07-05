@@ -3,6 +3,7 @@ import { renderHook, act } from '@testing-library/react';
 import React from 'react';
 import { CartProvider, useCart, buildWhatsAppMessage, recordOrder } from './CartContext';
 import { CartItem } from '../types';
+import { MENU_ITEMS } from '../constants';
 
 const wrapper = ({ children }: { children: React.ReactNode }) => <CartProvider>{children}</CartProvider>;
 
@@ -133,12 +134,14 @@ describe('localStorage hydration', () => {
   });
 
   it('re-derives a tampered persisted price from the catalog on hydration', () => {
-    // Catalog SKU id '1' (Sambar Onion Peeled) is ₹35 for 200 g in the fallback catalog.
+    // Use the real catalog's first SKU/pack so this stays correct as sheet prices change.
+    const sku = MENU_ITEMS[0];
+    const pack = sku.packSizes[0];
     localStorage.setItem('bhaargavi-cart', JSON.stringify([
-      { id: '1', name: 'Sambar Onion Peeled', image: '', price: 1, weight: '200 g', quantity: 1 },
+      { id: sku.id, name: sku.name, image: '', price: 1, weight: pack.weight, quantity: 1 },
     ]));
     const { result } = renderHook(() => useCart(), { wrapper });
-    expect(result.current.items[0].price).toBe(35);
-    expect(result.current.cartTotal).toBe(35);
+    expect(result.current.items[0].price).toBe(pack.price);
+    expect(result.current.cartTotal).toBe(pack.price);
   });
 });
