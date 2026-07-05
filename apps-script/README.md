@@ -56,3 +56,45 @@ Each order row shows **Client Total** vs **Server Total** and a **Match** column
 - `Y` — client and catalog agree. Normal.
 - `MISMATCH` — investigate before fulfilling. Usually means the live site had a stale price, or a
   line's SKU wasn't found in the catalog (see the **Unmatched SKUs** column).
+
+---
+
+# Publish catalog to the website (Publish.gs)
+
+`Publish.gs` adds a **Bhaargavi** menu to the spreadsheet with two actions and lets you push the
+catalog live without touching code. The website reads the **ProductCatalog** tab
+(`scripts/fetch-menu.cjs` → `src/data/menu.json`); "Publish" re-runs that sync, rebuilds, and deploys.
+
+## One-time setup
+
+1. **Add the file.** Extensions → Apps Script → File → **+** → name it `Publish.gs` → paste the
+   contents of [`Publish.gs`](./Publish.gs) → Save. Reload the spreadsheet; a **Bhaargavi** menu appears.
+2. **Backfill website-only products (once).** Bhaargavi → **Backfill missing products (once)**.
+   This appends the products that existed only on the website (Weekly Veggie Combo, the sprouts /
+   salad health packs, Muskmelon Cut, Ripe Peeled Jackfruit) to ProductCatalog. It is idempotent —
+   running it again skips anything already present.
+3. **Create a GitHub token** so the Publish button can trigger a deploy:
+   - GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens →
+     Generate new token**.
+   - **Resource owner:** `PalWorks`. **Repository access:** Only select repositories →
+     `bhaargavi-vegetables-website`.
+   - **Repository permissions:** **Actions → Read and write**, **Contents → Read-only**.
+   - Generate and copy the token (starts with `github_pat_`).
+4. **Store the token.** Apps Script → Project Settings (gear) → **Script Properties** → Add property:
+   - Name: `GITHUB_TOKEN`  Value: *(the token)*
+
+## Daily use
+
+Edit prices/products in **ProductCatalog**, then: Bhaargavi → **Publish catalog to website**.
+The `publish.yml` GitHub Action re-reads the sheet, rebuilds, and deploys — live in ~2-3 minutes.
+
+## Column requirements (ProductCatalog)
+
+`fetch-menu.cjs` locates columns **by header name** (order-independent). Headers used:
+`SortOrder, Name, Description, Category, Badge, Ingredients, Image`, plus size columns
+`100g, 200g, 250g, 300g, 500g, 1kg, 2kg, 3kg, 5kg, 10kg` (blank = size not offered; a row with no
+priced size is skipped). Notes:
+- **Category** must be one of `cut`, `fresh`, `health`, `offers` (drives the storefront tabs).
+- **Badge** values `new`, `bestseller`, `pre-order` are special (they set the product's ribbon /
+  pre-order button). Any other text is shown as a plain badge.
+- There is **no list/strike-through price column** — discount "was" prices aren't synced.

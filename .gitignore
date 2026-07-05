@@ -34,3 +34,6 @@ _agent/
 
 # TypeScript incremental build cache
 tsconfig.tsbuildinfo
+
+# Catalog snapshots (contain Orders/Config data — never deploy or commit)
+catalog-snapshots/

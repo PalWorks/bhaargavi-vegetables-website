@@ -1,0 +1,71 @@
+name: Publish Catalog
+
+# Lightweight, on-demand publish: re-read ProductCatalog from Google Sheets,
+# rebuild, and deploy. Triggered manually, from the CLI (`gh workflow run
+# publish.yml`), or by the spreadsheet's "Publish catalog to website" button
+# (which sends a workflow_dispatch via the GitHub API).
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [publish-catalog]
+
+permissions:
+  contents: write
+  deployments: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Fetch site config
+        env:
+          SKUITEMMASTER_GOOGLE_SHEETS_API_KEY: ${{ secrets.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY }}
+          BHAARGAVI_SHEETS_ID: ${{ secrets.BHAARGAVI_SHEETS_ID }}
+        run: npm run fetch:config || true
+
+      - name: Fetch menu from ProductCatalog
+        env:
+          SKUITEMMASTER_GOOGLE_SHEETS_API_KEY: ${{ secrets.SKUITEMMASTER_GOOGLE_SHEETS_API_KEY }}
+          BHAARGAVI_SHEETS_ID: ${{ secrets.BHAARGAVI_SHEETS_ID }}
+        run: |
+          if [ -z "$SKUITEMMASTER_GOOGLE_SHEETS_API_KEY" ]; then
+            echo "::error::SKUITEMMASTER_GOOGLE_SHEETS_API_KEY not set — cannot sync catalog."
+            exit 1
+          fi
+          npm run fetch:menu
+
+      - name: Commit refreshed data
+        run: |
+          git config --global user.name 'GitHub Action'
+          git config --global user.email 'action@github.com'
+          git pull origin main
+          git add src/data/ 2>/dev/null || true
+          git diff --staged --quiet || (git commit -m "chore: publish catalog from ProductCatalog sheet" && git push)
+
+      - name: Build
+        env:
+          VITE_APPS_SCRIPT_URL: ${{ secrets.VITE_APPS_SCRIPT_URL }}
+          VITE_GOOGLE_PLACE_ID: ${{ secrets.VITE_GOOGLE_PLACE_ID }}
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: bhaargavi-website
+          directory: dist
+          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
