@@ -74,8 +74,8 @@ export const hi: typeof en = {
   },
   reviews: {
     tag: 'ग्राहक प्रेम',
-    title_start: 'चेन्नई क्या',
-    title_end: 'कह रहा है',
+    title_start: '',
+    title_end: 'क्या कह रहा है',
     desc: 'उन वास्तविक परिवारों के शब्द जिन्होंने Bhaargavi Fresh Cuts को अपनी रोज़ाना की रसोई का हिस्सा बनाया है।',
     google_cta: 'सभी Google समीक्षाएं देखें',
     write_review: 'समीक्षा लिखें',

@@ -74,7 +74,7 @@ export const en = {
   },
   reviews: {
     tag: 'Customer Love',
-    title_start: 'What Chennai',
+    title_start: 'What',
     title_end: 'is saying',
     desc: 'Real words from real families who have made Bhaargavi Fresh Cuts a part of their daily cooking.',
     google_cta: 'View all Google Reviews',

@@ -74,8 +74,8 @@ export const ta: typeof en = {
   },
   reviews: {
     tag: 'வாடிக்கையாளர் அன்பு',
-    title_start: 'சென்னை என்ன',
-    title_end: 'சொல்கிறது',
+    title_start: '',
+    title_end: 'என்ன சொல்கிறது',
     desc: 'தினமும் Bhaargavi Fresh Cuts-ஐ தங்கள் சமையலின் ஒரு பகுதியாக ஆக்கிக்கொண்ட உண்மையான குடும்பங்களின் வார்த்தைகள்.',
     google_cta: 'அனைத்து Google மதிப்புரைகளையும் காண்க',
     write_review: 'மதிப்புரை எழுதுங்கள்',
