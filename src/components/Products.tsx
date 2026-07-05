@@ -5,7 +5,7 @@ import { useLanguage } from '../LanguageContext';
 import { MENU_ITEMS } from '../constants';
 import { MenuItem, PackSize } from '../types';
 
-type Category = 'all' | 'fresh' | 'cut' | 'health' | 'offers';
+type Category = string;
 
 const Badge: React.FC<{ label: string; color: string }> = ({ label, color }) => (
   <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide ${color}`}>
@@ -125,17 +125,26 @@ const Products: React.FC = () => {
   const { t } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<Category>('all');
 
+  // Categories are data-driven: any keyword in the sheet's Category column becomes a tab.
+  // An item may list several (comma-separated) and appears under each. Matching is
+  // case-insensitive; the four known keys keep their translated labels, any new keyword
+  // is shown exactly as typed in the sheet. "All" always shows everything.
+  const knownLabels: Record<string, string> = {
+    fresh: t.products.fresh, cut: t.products.cut, health: t.products.health, offers: t.products.offers,
+  };
+  const seen = new Map<string, string>(); // lowercased key -> display label (first occurrence)
+  MENU_ITEMS.forEach(i => i.categories.forEach(c => {
+    const key = c.trim().toLowerCase();
+    if (key && !seen.has(key)) seen.set(key, knownLabels[key] || c.trim());
+  }));
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: t.products.all },
-    { key: 'fresh', label: t.products.fresh },
-    { key: 'cut', label: t.products.cut },
-    { key: 'health', label: t.products.health },
-    { key: 'offers', label: t.products.offers },
+    ...Array.from(seen, ([key, label]) => ({ key, label })),
   ];
 
   const filtered = activeCategory === 'all'
     ? MENU_ITEMS
-    : MENU_ITEMS.filter(i => i.category === activeCategory);
+    : MENU_ITEMS.filter(i => i.categories.some(c => c.trim().toLowerCase() === activeCategory));
 
   return (
     <section id="products" className="py-20 bg-bv-cream/30">

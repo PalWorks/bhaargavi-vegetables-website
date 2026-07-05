@@ -63,7 +63,9 @@ function rowsToItems(rows) {
         sortOrder: Number(row[sortCol]) || (idx + 1),
         name: String(row[nameCol] || '').trim(),
         description: String(row[descCol] || '').trim(),
-        category: String(row[catCol] || 'cut').trim().toLowerCase(),
+        // Kept as typed (may be comma-separated for multiple categories); the site
+        // splits, lowercases for matching, and shows known keys with translated labels.
+        category: String(row[catCol] || 'cut').trim(),
         badge: String(row[badgeCol] || '').trim(),
         image: convertDriveUrl(String(row[imageCol] || '').trim()),
         ingredients: String(row[ingredientsCol] || '').trim(),

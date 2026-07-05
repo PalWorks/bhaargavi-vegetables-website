@@ -3,9 +3,9 @@ import { reconcileCartPrices } from './pricing';
 import { CartItem, MenuItem } from '../types';
 
 const menu: MenuItem[] = [
-  { id: '1', name: 'Carrot Cut', description: '', image: '', category: 'cut',
+  { id: '1', name: 'Carrot Cut', description: '', image: '', categories: ['cut'],
     packSizes: [{ weight: '250 g', price: 40 }, { weight: '500 g', price: 75 }] },
-  { id: '27', name: 'Weekly Veggie Combo', description: '', image: '', category: 'offers',
+  { id: '27', name: 'Weekly Veggie Combo', description: '', image: '', categories: ['offers'],
     packSizes: [{ weight: '1 kg', price: 299 }] },
 ];
 

@@ -81,7 +81,7 @@ catalog live without touching code. The website reads the **ProductCatalog** tab
    - **Repository permissions:** **Actions → Read and write**, **Contents → Read-only**.
    - Generate and copy the token (starts with `github_pat_`).
 4. **Store the token.** Apps Script → Project Settings (gear) → **Script Properties** → Add property:
-   - Name: `GITHUB_TOKEN`  Value: *(the token)*
+   - Name: `PUSH_TO_GITHUB_TOKEN`  Value: *(the token)*
 
 ## Daily use
 
@@ -94,7 +94,11 @@ The `publish.yml` GitHub Action re-reads the sheet, rebuilds, and deploys — li
 `SortOrder, Name, Description, Category, Badge, Ingredients, Image`, plus size columns
 `100g, 200g, 250g, 300g, 500g, 1kg, 2kg, 3kg, 5kg, 10kg` (blank = size not offered; a row with no
 priced size is skipped). Notes:
-- **Category** must be one of `cut`, `fresh`, `health`, `offers` (drives the storefront tabs).
+- **Category** drives the storefront tabs. Any keyword becomes its own tab, and an item may list
+  **several categories comma-separated** (e.g. `cut, offers`) to appear under each. Matching is
+  case-insensitive; the labels `cut`, `fresh`, `health`, `offers` render as their translated tab
+  names ("Cut Vegetables", etc.), any other keyword shows exactly as typed. "All" always lists
+  everything.
 - **Badge** values `new`, `bestseller`, `pre-order` are special (they set the product's ribbon /
   pre-order button). Any other text is shown as a plain badge.
 - There is **no list/strike-through price column** — discount "was" prices aren't synced.

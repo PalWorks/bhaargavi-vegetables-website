@@ -41,7 +41,7 @@ const sheetMenuItems: MenuItem[] = (menuData as Record<string, unknown>[]).map(i
   description: String(item.description || ''),
   packSizes: buildPackSizes(item),
   image: String(item.image || ''),
-  category: (item.category as MenuItem['category']) || 'cut',
+  categories: String(item.category || '').split(',').map(s => s.trim()).filter(Boolean),
   badge: item.badge ? String(item.badge) : undefined,
   isNew: String(item.badge).toLowerCase() === 'new',
   isBestseller: String(item.badge).toLowerCase() === 'bestseller',

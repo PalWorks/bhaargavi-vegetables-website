@@ -10,7 +10,7 @@ export interface MenuItem {
   description: string;
   packSizes: PackSize[];
   image: string;
-  category: 'fresh' | 'cut' | 'health' | 'offers';
+  categories: string[];
   isNew?: boolean;
   isBestseller?: boolean;
   isSoldOut?: boolean;

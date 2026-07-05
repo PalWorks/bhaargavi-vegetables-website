@@ -13,7 +13,7 @@
  *   Extensions → Apps Script → add this file (File → +, name it "Publish.gs"), Save.
  *   Then set a GitHub token so the Publish button can trigger a deploy:
  *     Apps Script → Project Settings (gear) → Script Properties → Add property
- *       Name:  GITHUB_TOKEN
+ *       Name:  PUSH_TO_GITHUB_TOKEN
  *       Value: <a GitHub token — see apps-script/README.md for how to create it>
  *   Reload the spreadsheet; the "Bhaargavi" menu appears.
  */
@@ -35,9 +35,9 @@ function onOpen() {
 /** Triggers the publish.yml workflow on GitHub (workflow_dispatch). */
 function publishToWebsite() {
   var ui = SpreadsheetApp.getUi();
-  var token = PropertiesService.getScriptProperties().getProperty('GITHUB_TOKEN');
+  var token = PropertiesService.getScriptProperties().getProperty('PUSH_TO_GITHUB_TOKEN');
   if (!token) {
-    ui.alert('No GITHUB_TOKEN set.\n\nAdd it in Project Settings → Script Properties. See apps-script/README.md.');
+    ui.alert('No PUSH_TO_GITHUB_TOKEN set.\n\nAdd it in Project Settings → Script Properties. See apps-script/README.md.');
     return;
   }
   var url = 'https://api.github.com/repos/' + GITHUB_OWNER + '/' + GITHUB_REPO +
