@@ -130,7 +130,6 @@ These are intentionally set to easy-to-find placeholders until the real accounts
 
 | Placeholder | Where | Replace with |
 |---|---|---|
-| Domain `bhaargavifreshcuts.in` | `index.html`, `public/sitemap.xml`, `public/robots.txt` | the purchased domain |
 | Instagram `@bhaargavifreshvegetables` | `src/constants.ts` (`INSTAGRAM_URL`, `INSTAGRAM_HANDLE`) | the live handle |
 | Google reviews | `VITE_GOOGLE_PLACE_ID` (unset) | the Business Profile Place ID |
 | `public/favicon.ico` | root favicon | a Bhaargavi-branded icon |

@@ -56,7 +56,7 @@ export const en = {
     ordering_note: 'Please note:',
     whatsapp_greeting: 'Hello Bhaargavi Fresh Cuts! I would like to order:',
     whatsapp_custom_note: 'Custom note',
-    whatsapp_confirm: 'Please confirm my order and share delivery details. Thank you for choosing Bhaargavi Fresh Cuts.',
+    whatsapp_confirm: 'Please confirm my order and share delivery details.',
   },
   story: {
     title: 'The Bhaargavi Story',

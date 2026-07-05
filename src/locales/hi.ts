@@ -56,7 +56,7 @@ export const hi: typeof en = {
     ordering_note: 'कृपया ध्यान दें:',
     whatsapp_greeting: 'नमस्ते Bhaargavi Fresh Cuts! मैं ऑर्डर करना चाहता/चाहती हूं:',
     whatsapp_custom_note: 'कस्टम नोट',
-    whatsapp_confirm: 'कृपया मेरा ऑर्डर कन्फर्म करें और डिलीवरी विवरण साझा करें। Bhaargavi Fresh Cuts चुनने के लिए धन्यवाद।',
+    whatsapp_confirm: 'कृपया मेरा ऑर्डर कन्फर्म करें और डिलीवरी विवरण साझा करें।',
   },
   story: {
     title: 'भाargavi की कहानी',

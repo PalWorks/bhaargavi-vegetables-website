@@ -56,7 +56,7 @@ export const ta: typeof en = {
     ordering_note: 'தயவுசெய்து கவனிக்கவும்:',
     whatsapp_greeting: 'வணக்கம் Bhaargavi Fresh Cuts! நான் ஆர்டர் செய்ய விரும்புகிறேன்:',
     whatsapp_custom_note: 'தனிப்பயன் குறிப்பு',
-    whatsapp_confirm: 'என் ஆர்டரை உறுதிப்படுத்தி டெலிவரி விவரங்களை பகிரவும். Bhaargavi Fresh Cuts தேர்ந்தெடுத்தமைக்கு நன்றி.',
+    whatsapp_confirm: 'என் ஆர்டரை உறுதிப்படுத்தி டெலிவரி விவரங்களை பகிரவும்.',
   },
   story: {
     title: 'Bhaargavi-ன் கதை',
