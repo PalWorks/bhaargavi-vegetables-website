@@ -29,9 +29,9 @@ const GoogleReviews: React.FC = () => {
             <Star key={i} size={28} className="text-bv-orange fill-bv-orange" />
           ))}
         </div>
-        <h2 className="font-display text-2xl sm:text-3xl text-bv-dark mb-3">Rated 5.0 by Chennai Families</h2>
+        <h2 className="font-display text-2xl sm:text-3xl text-bv-dark mb-3">{t.reviews.rating_title}</h2>
         <p className="text-bv-muted text-sm mb-8 max-w-lg mx-auto">
-          Join hundreds of happy households who trust Bhaargavi for fresh, hygienic, ready-to-cook produce.
+          {t.reviews.rating_sub}
         </p>
         <div className="flex flex-wrap justify-center gap-4">
           <a href={`https://wa.me/${WA_NUMBER}`} target="_blank" rel="noreferrer"

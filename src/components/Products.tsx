@@ -58,7 +58,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
         {/* Ingredients */}
         {item.ingredients && item.ingredients.length > 0 && (
           <div className="mb-4">
-            <p className="text-[10px] text-bv-muted font-bold tracking-wider uppercase mb-1.5">Ingredients</p>
+            <p className="text-[10px] text-bv-muted font-bold tracking-wider uppercase mb-1.5">{t.products.ingredients}</p>
             <div className="flex flex-wrap gap-1.5">
               {item.ingredients.map(ing => (
                 <span key={ing} className="text-[10px] bg-gray-100 text-bv-dark px-2 py-0.5 rounded border border-gray-200">
@@ -104,7 +104,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
           </button>
         ) : inCart ? (
           <div className="flex items-center justify-between bg-bv-green-pale rounded-xl px-3 py-2">
-            <span className="text-xs font-semibold text-bv-green">In cart ({inCart.quantity})</span>
+            <span className="text-xs font-semibold text-bv-green">{t.products.in_cart} ({inCart.quantity})</span>
             <button onClick={handleAdd} className="bg-bv-green text-white rounded-full p-1 hover:bg-bv-green-light transition-colors">
               <Plus size={14} />
             </button>

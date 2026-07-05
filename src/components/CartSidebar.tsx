@@ -231,11 +231,11 @@ const CartSidebar: React.FC = () => {
                       <textarea
                         value={address}
                         onChange={(e) => { setAddress(e.target.value); if (e.target.value.trim() !== '') setAddressError(false); }}
-                        placeholder="Enter your complete delivery address here..."
+                        placeholder={t.cart.address_placeholder}
                         className={`w-full text-sm border rounded-lg px-3 py-2 min-h-[80px] focus:outline-none focus:ring-1 ${addressError ? 'border-red-400 focus:border-red-500 focus:ring-red-200' : 'border-bv-border focus:border-bv-green focus:ring-bv-green/20'}`}
                       />
                       {addressError && (
-                        <p className="text-red-500 text-xs font-semibold mt-1">Please enter your address to proceed.</p>
+                        <p className="text-red-500 text-xs font-semibold mt-1">{t.cart.address_required}</p>
                       )}
                     </div>
                   )}
