@@ -29,7 +29,7 @@ export const PrivacyPolicy: React.FC = () => (
   <PolicyLayout
     title="Privacy Policy"
     lastUpdated="1 June 2026"
-    path="/privacy"
+    path="/privacy/"
     metaTitle="Privacy Policy | Bhaargavi Fresh Cuts"
     metaDescription="How Bhaargavi Fresh Cuts collects, uses, and protects your information when you order fresh cut vegetables in Chennai via WhatsApp."
   >
@@ -53,7 +53,7 @@ export const TermsOfService: React.FC = () => (
   <PolicyLayout
     title="Terms and Conditions"
     lastUpdated="1 June 2026"
-    path="/terms"
+    path="/terms/"
     metaTitle="Terms and Conditions | Bhaargavi Fresh Cuts"
     metaDescription="Terms for ordering FSSAI-certified fresh cut vegetables and fruits from Bhaargavi Fresh Cuts in Chennai: products, pricing, minimum order, and payment."
   >
@@ -79,7 +79,7 @@ export const RefundPolicy: React.FC = () => (
   <PolicyLayout
     title="Refund and Return Policy"
     lastUpdated="1 June 2026"
-    path="/refund"
+    path="/refund/"
     metaTitle="Refund and Return Policy | Bhaargavi Fresh Cuts"
     metaDescription="Bhaargavi Fresh Cuts refund and return policy for fresh cut vegetables in Chennai: quality issues, wrong items, refund process, and cancellations."
   >
@@ -103,7 +103,7 @@ export const ShippingPolicy: React.FC = () => (
   <PolicyLayout
     title="Shipping and Delivery Policy"
     lastUpdated="1 June 2026"
-    path="/shipping"
+    path="/shipping/"
     metaTitle="Shipping and Delivery Policy | Bhaargavi Fresh Cuts"
     metaDescription="Bhaargavi Fresh Cuts delivery areas, days and hours (Mon–Sat, 6 AM–8 PM), minimum order, charges, and freshness guarantee for Chennai."
   >

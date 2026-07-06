@@ -31,7 +31,7 @@ const AboutPage: React.FC = () => {
       <Seo
         title="About Bhaargavi Fresh Cuts | FSSAI-Certified Fresh Cut Vegetables, Chennai"
         description="How Bhaargavi Fresh Cuts prepares FSSAI-certified fresh cut vegetables and fruits in Chennai: RO water washed, AC room processed, cold-chain delivered, zero preservatives."
-        path="/about"
+        path="/about/"
       />
 
       {/* Hero */}
