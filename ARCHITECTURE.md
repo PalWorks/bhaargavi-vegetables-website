@@ -72,3 +72,8 @@ Google Sheet (SKU Item Master)
   carousel images, lints, tests, builds, deploys.
 - Both share a `concurrency` group and commit-then-rebase so they cannot race.
 - Build injects `VITE_APPS_SCRIPT_URL` and `VITE_GOOGLE_PLACE_ID` from GitHub secrets.
+- **Deploys are intentionally manual/scheduled — there is no `push:` trigger.** Pushing to
+  `main` does *not* deploy; production only updates on the Monday cron, a manual
+  `gh workflow run publish.yml`, or the spreadsheet's Publish button. Deploy runs via
+  GitHub Actions (`cloudflare/pages-action@v1`), not Cloudflare's native git integration
+  (the Pages project shows "Git Provider: No").

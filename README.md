@@ -152,6 +152,10 @@ GitHub Actions secrets. Key ones:
 Static build to `dist/`, hosted on Cloudflare Pages. `public/_redirects` (`/* /index.html 200`)
 provides SPA fallback so deep links (`/about`, `/privacy`, …) resolve on refresh.
 
+Deploys are **manual/scheduled by design** — there is no `push:` trigger, so pushing to `main`
+does not go live on its own. Production updates only via the Monday cron, `gh workflow run
+publish.yml`, or the spreadsheet's Publish button. See [`ARCHITECTURE.md`](ARCHITECTURE.md#deploy-pipeline).
+
 ## Placeholders to replace before launch
 
 These are intentionally set to easy-to-find placeholders until the real accounts exist:
