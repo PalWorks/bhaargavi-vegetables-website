@@ -1,8 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Seo from './Seo';
 
-const PolicyLayout: React.FC<{ title: string; lastUpdated: string; children: React.ReactNode }> = ({ title, lastUpdated, children }) => (
+const PolicyLayout: React.FC<{
+  title: string;
+  lastUpdated: string;
+  path: string;
+  metaTitle: string;
+  metaDescription: string;
+  children: React.ReactNode;
+}> = ({ title, lastUpdated, path, metaTitle, metaDescription, children }) => (
   <div className="pt-24 pb-16 min-h-screen bg-bv-cream">
+    <Seo title={metaTitle} description={metaDescription} path={path} />
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
       <Link to="/" className="text-bv-green text-sm font-semibold hover:underline mb-6 inline-block">
         &larr; Back to Home
@@ -17,7 +26,13 @@ const PolicyLayout: React.FC<{ title: string; lastUpdated: string; children: Rea
 );
 
 export const PrivacyPolicy: React.FC = () => (
-  <PolicyLayout title="Privacy Policy" lastUpdated="1 June 2026">
+  <PolicyLayout
+    title="Privacy Policy"
+    lastUpdated="1 June 2026"
+    path="/privacy"
+    metaTitle="Privacy Policy | Bhaargavi Fresh Cuts"
+    metaDescription="How Bhaargavi Fresh Cuts collects, uses, and protects your information when you order fresh cut vegetables in Chennai via WhatsApp."
+  >
     <p>Bhaargavi Fresh Cuts (&ldquo;we&rdquo;, &ldquo;our&rdquo;, &ldquo;us&rdquo;) operates through WhatsApp and this website. This policy explains how we collect and use your information.</p>
     <h2>1. Information We Collect</h2>
     <p>When you place an order, you share your WhatsApp phone number and address voluntarily. We do not collect sensitive personal data.</p>
@@ -35,7 +50,13 @@ export const PrivacyPolicy: React.FC = () => (
 );
 
 export const TermsOfService: React.FC = () => (
-  <PolicyLayout title="Terms and Conditions" lastUpdated="1 June 2026">
+  <PolicyLayout
+    title="Terms and Conditions"
+    lastUpdated="1 June 2026"
+    path="/terms"
+    metaTitle="Terms and Conditions | Bhaargavi Fresh Cuts"
+    metaDescription="Terms for ordering FSSAI-certified fresh cut vegetables and fruits from Bhaargavi Fresh Cuts in Chennai: products, pricing, minimum order, and payment."
+  >
     <p>By placing an order with Bhaargavi Fresh Cuts, you agree to these terms.</p>
     <h2>1. Products</h2>
     <p>All products are FSSAI-registered, freshly cut on the day of delivery. Images are for illustrative purposes. Actual weight may vary by up to 5% due to natural product variation.</p>
@@ -55,7 +76,13 @@ export const TermsOfService: React.FC = () => (
 );
 
 export const RefundPolicy: React.FC = () => (
-  <PolicyLayout title="Refund and Return Policy" lastUpdated="1 June 2026">
+  <PolicyLayout
+    title="Refund and Return Policy"
+    lastUpdated="1 June 2026"
+    path="/refund"
+    metaTitle="Refund and Return Policy | Bhaargavi Fresh Cuts"
+    metaDescription="Bhaargavi Fresh Cuts refund and return policy for fresh cut vegetables in Chennai: quality issues, wrong items, refund process, and cancellations."
+  >
     <p>We take quality seriously. If you are not satisfied with your order, we are here to help.</p>
     <h2>1. Quality Issues</h2>
     <p>If you receive a product that is not fresh, damaged, or significantly different from your order, please send us a WhatsApp message with a photo within 2 hours of delivery.</p>
@@ -73,7 +100,13 @@ export const RefundPolicy: React.FC = () => (
 );
 
 export const ShippingPolicy: React.FC = () => (
-  <PolicyLayout title="Shipping and Delivery Policy" lastUpdated="1 June 2026">
+  <PolicyLayout
+    title="Shipping and Delivery Policy"
+    lastUpdated="1 June 2026"
+    path="/shipping"
+    metaTitle="Shipping and Delivery Policy | Bhaargavi Fresh Cuts"
+    metaDescription="Bhaargavi Fresh Cuts delivery areas, days and hours (Mon–Sat, 6 AM–8 PM), minimum order, charges, and freshness guarantee for Chennai."
+  >
     <p>We deliver fresh cut vegetables and fruits to select areas in Chennai.</p>
     <h2>1. Delivery Area</h2>
     <p>We currently deliver within a 15 km radius of Pazhanthandalam, Kancheepuram District. Please confirm your pin code via WhatsApp before placing an order.</p>

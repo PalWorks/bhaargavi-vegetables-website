@@ -11,6 +11,7 @@ import InstagramFeed from './components/InstagramFeed';
 import AboutPage from './components/AboutPage';
 import Footer from './components/Footer';
 import ScrollVideoBackground from './components/ScrollVideoBackground';
+import Seo from './components/Seo';
 import { PrivacyPolicy, TermsOfService, RefundPolicy, ShippingPolicy } from './components/PolicyPages';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider, useLanguage } from './LanguageContext';
@@ -49,6 +50,11 @@ const Layout: React.FC = () => {
 
 const HomePage: React.FC = () => (
   <>
+    <Seo
+      title="Bhaargavi Fresh Cuts | Fresh Vegetables Delivered in Chennai"
+      description="FSSAI-certified fresh cut fruits and vegetables delivered to your Chennai doorstep. RO water washed, AC room processed, no preservatives. Order via WhatsApp."
+      path="/"
+    />
     <Hero />
     <Products />
     <ReviewCarousel />
