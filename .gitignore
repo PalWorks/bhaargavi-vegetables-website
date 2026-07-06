@@ -15,6 +15,9 @@ dist-ssr
 # Instagram media files (downloaded at build-time, not tracked in git)
 public/instagram/
 
+# WebP variants generated at build-time by scripts/optimize-images.cjs
+public/menu/*.webp
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

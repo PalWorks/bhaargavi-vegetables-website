@@ -12,8 +12,8 @@ function slugify(input) {
 }
 
 // Static routes prerendered as their own HTML files (trailing slash = Cloudflare's
-// canonical form). '/faq/' is added in Phase C once FaqPage exists.
-const STATIC_ROUTES = ['/', '/about/', '/privacy/', '/terms/', '/refund/', '/shipping/'];
+// canonical form).
+const STATIC_ROUTES = ['/', '/about/', '/privacy/', '/terms/', '/refund/', '/shipping/', '/faq/'];
 
 // Categories: split the comma-separated Category column, dedupe by slug.
 const categoryMap = new Map(); // slug -> raw label

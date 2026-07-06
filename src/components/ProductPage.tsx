@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { PackSize } from '../types';
 import { productSlug, categorySlug } from '../utils/slug';
+import { webpVariant } from '../utils/img';
 import { ProductCard } from './Products';
 import Seo from './Seo';
 import JsonLd from './JsonLd';
@@ -103,16 +104,19 @@ const ProductPage: React.FC = () => {
 
         <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
           <div className="rounded-2xl overflow-hidden bg-bv-card border border-bv-border">
-            <img
-              src={item.image}
-              alt={name}
-              width={800}
-              height={800}
-              onError={(e) => {
-                e.currentTarget.src = '/BhaargaviLogo.jpg';
-              }}
-              className="w-full aspect-square object-cover"
-            />
+            <picture>
+              {webpVariant(item.image) && <source srcSet={webpVariant(item.image)!} type="image/webp" />}
+              <img
+                src={item.image}
+                alt={name}
+                width={800}
+                height={800}
+                onError={(e) => {
+                  e.currentTarget.src = '/BhaargaviLogo.jpg';
+                }}
+                className="w-full aspect-square object-cover"
+              />
+            </picture>
           </div>
 
           <div>

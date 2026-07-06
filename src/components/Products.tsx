@@ -6,6 +6,7 @@ import { useLanguage } from '../LanguageContext';
 import { MENU_ITEMS } from '../constants';
 import { MenuItem, PackSize } from '../types';
 import { productSlug } from '../utils/slug';
+import { webpVariant } from '../utils/img';
 import categoriesI18n from '../data/categories-i18n.json';
 
 type Category = string;
@@ -54,9 +55,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
     <div className="bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-bv-border/50 flex flex-col">
       {/* Image */}
       <div className="relative h-44 bg-bv-card overflow-hidden">
-        <img loading="lazy" src={item.image} alt={name}
-             onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
-             className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+        <picture>
+          {webpVariant(item.image) && <source srcSet={webpVariant(item.image)!} type="image/webp" />}
+          <img loading="lazy" src={item.image} alt={name} width={400} height={176}
+               onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
+               className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
+        </picture>
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
           {item.isBestseller && <Badge label={t.products.bestseller} color="bg-bv-orange text-white" />}
           {item.isNew && <Badge label={t.products.new_label} color="bg-bv-green text-white" />}

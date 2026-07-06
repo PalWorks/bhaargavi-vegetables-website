@@ -79,3 +79,25 @@ jobs:
           projectName: bhaargavi-website
           directory: dist
           gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      # Notify Bing/IndexNow so search engines recrawl on publish. The key is
+      # public (served at keyLocation); a failed ping must not fail the deploy.
+      - name: Ping IndexNow
+        run: |
+          BODY=$(node -e '
+            const fs=require("fs");
+            const xml=fs.readFileSync("dist/sitemap.xml","utf8");
+            const urls=[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
+            process.stdout.write(JSON.stringify({
+              host: process.env.HOST, key: process.env.KEY,
+              keyLocation: `https://${process.env.HOST}/${process.env.KEY}.txt`,
+              urlList: urls
+            }));
+          ')
+          echo "Submitting $(node -e 'process.stdout.write(String(JSON.parse(process.argv[1]).urlList.length))' "$BODY") URLs to IndexNow"
+          curl -sS -X POST 'https://api.indexnow.org/indexnow' \
+            -H 'Content-Type: application/json; charset=utf-8' \
+            -d "$BODY" -w '\nIndexNow HTTP %{http_code}\n' || true
+        env:
+          HOST: bhaargavifreshcuts.com
+          KEY: ac86a13aece79a2e921d83a4a270ea1a

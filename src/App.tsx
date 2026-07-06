@@ -14,6 +14,7 @@ import ScrollVideoBackground from './components/ScrollVideoBackground';
 import Seo from './components/Seo';
 import CategoryPage from './components/CategoryPage';
 import ProductPage from './components/ProductPage';
+import FaqPage from './components/FaqPage';
 import NotFound from './components/NotFound';
 import { PrivacyPolicy, TermsOfService, RefundPolicy, ShippingPolicy } from './components/PolicyPages';
 import { CartProvider } from './context/CartContext';
@@ -80,6 +81,7 @@ function App() {
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/refund" element={<RefundPolicy />} />
                 <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/faq" element={<FaqPage />} />
                 <Route path="/category/:slug" element={<CategoryPage />} />
                 <Route path="/products/:slug" element={<ProductPage />} />
                 <Route path="*" element={<NotFound />} />

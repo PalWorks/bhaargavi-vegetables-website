@@ -84,11 +84,29 @@ async function main() {
     args: ['--no-sandbox', '--disable-setuid-sandbox'],
   });
 
+  // Third-party hosts (analytics, fonts, remote images) keep connections open and
+  // never let the page reach network idle — and they're irrelevant to the rendered
+  // HTML. Only same-origin requests (our JS/CSS) matter for prerender.
+  const isThirdParty = (reqUrl) => {
+    try {
+      return new URL(reqUrl).host !== `${HOST}:${port}`;
+    } catch {
+      return true;
+    }
+  };
+
   try {
     for (const route of ROUTES) {
       const page = await browser.newPage();
+      await page.setRequestInterception(true);
+      page.on('request', (req) => {
+        if (isThirdParty(req.url()) && req.url() !== 'about:blank') req.abort();
+        else req.continue();
+      });
       const url = `${base}${route}`;
-      await page.goto(url, { waitUntil: 'networkidle0', timeout: 45000 });
+      // Rely on the #root content check below rather than network idle; blocked
+      // third-party requests would otherwise stall networkidle0 until timeout.
+      await page.goto(url, { waitUntil: 'domcontentloaded', timeout: 45000 });
       // Ensure React has mounted content into #root.
       await page.waitForFunction(
         () => {
