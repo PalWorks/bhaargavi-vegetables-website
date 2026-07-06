@@ -18,9 +18,17 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { addToCart, items } = useCart();
   const [selectedSize, setSelectedSize] = useState<PackSize>(item.packSizes[0]);
+
+  // Display uses the auto-translated content (English fallback). The cart/order
+  // always uses the English name so WhatsApp orders and server-side price
+  // matching against the catalog stay consistent.
+  const loc = item.i18n?.[language];
+  const name = loc?.name || item.name;
+  const description = loc?.description || item.description;
+  const ingredients = (loc?.ingredients && loc.ingredients.length ? loc.ingredients : item.ingredients) || [];
 
   const cartKey = `${item.id}__${selectedSize.weight}`;
   const inCart = items.find(i => `${i.id}__${i.weight}` === cartKey);
@@ -40,7 +48,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
     <div className="bg-white/90 backdrop-blur-md rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 border border-bv-border/50 flex flex-col">
       {/* Image */}
       <div className="relative h-44 bg-bv-card overflow-hidden">
-        <img loading="lazy" src={item.image} alt={item.name} 
+        <img loading="lazy" src={item.image} alt={name}
              onError={(e) => { e.currentTarget.src = '/BhaargaviLogo.jpg'; }}
              className="w-full h-full object-cover transition-transform duration-500 hover:scale-105" />
         <div className="absolute top-3 left-3 flex flex-wrap gap-1">
@@ -52,15 +60,15 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       </div>
 
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-bv-dark text-base leading-snug mb-1">{item.name}</h3>
-        <p className="text-bv-muted text-xs leading-relaxed mb-3">{item.description}</p>
+        <h3 className="font-bold text-bv-dark text-base leading-snug mb-1">{name}</h3>
+        <p className="text-bv-muted text-xs leading-relaxed mb-3">{description}</p>
 
         {/* Ingredients */}
-        {item.ingredients && item.ingredients.length > 0 && (
+        {ingredients.length > 0 && (
           <div className="mb-4">
             <p className="text-[10px] text-bv-muted font-bold tracking-wider uppercase mb-1.5">{t.products.ingredients}</p>
             <div className="flex flex-wrap gap-1.5">
-              {item.ingredients.map(ing => (
+              {ingredients.map(ing => (
                 <span key={ing} className="text-[10px] bg-gray-100 text-bv-dark px-2 py-0.5 rounded border border-gray-200">
                   {ing}
                 </span>

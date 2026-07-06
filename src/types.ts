@@ -17,6 +17,9 @@ export interface MenuItem {
   isPreOrder?: boolean;
   badge?: string;
   ingredients?: string[];
+  // Auto-generated localized content, keyed by language code (e.g. 'ta', 'hi').
+  // Populated at build time by scripts/translate-menu.cjs; English is the fallback.
+  i18n?: Record<string, { name?: string; description?: string; ingredients?: string[] }>;
 }
 
 export interface CartItem {

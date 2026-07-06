@@ -47,6 +47,7 @@ const sheetMenuItems: MenuItem[] = (menuData as Record<string, unknown>[]).map(i
   isBestseller: String(item.badge).toLowerCase() === 'bestseller',
   isPreOrder: String(item.badge).toLowerCase() === 'pre-order',
   ingredients: item.ingredients ? String(item.ingredients).split(',').map(s => s.trim()) : [],
+  i18n: item.i18n as MenuItem['i18n'],
 }));
 
 export const MENU_ITEMS: MenuItem[] = sheetMenuItems;
