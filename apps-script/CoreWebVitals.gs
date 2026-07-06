@@ -43,10 +43,19 @@ function logCoreWebVitals() {
   var key = PropertiesService.getScriptProperties().getProperty('PSI_API_KEY');
   var now = new Date();
 
+  // Apps Script kills a run at ~6 min. PSI's Lighthouse analysis is slow (20-60s/URL),
+  // so guard the total: if we're close to the cap, log the rest as skipped rather than
+  // letting the run die silently mid-URL (which drops the last row with no trace).
+  var start = new Date().getTime();
+  var BUDGET_MS = 5 * 60 * 1000;
+
   for (var i = 0; i < CWV_URLS.length; i++) {
+    if (new Date().getTime() - start > BUDGET_MS) {
+      sheet.appendRow([now, CWV_URLS[i], CWV_STRATEGY, '', '', '', '', '', '', '', 'skipped: 5-min time budget reached']);
+      continue;
+    }
     var row = measureUrl_(CWV_URLS[i], key, now);
     sheet.appendRow(row);
-    Utilities.sleep(1500); // be gentle on the API
   }
 }
 
@@ -58,14 +67,15 @@ function measureUrl_(url, key, ts) {
   if (key) api += '&key=' + key;
 
   try {
-    // Retry on 429 (quota/rate) and 5xx (transient) with exponential backoff.
-    var resp, code, attempt = 0, maxAttempts = 3;
+    // Retry once on 429 (quota/rate) or 5xx (transient). Kept to a single short retry
+    // so a bad URL can't blow the run's time budget (see BUDGET_MS above).
+    var resp, code, attempt = 0, maxAttempts = 2;
     while (true) {
       resp = UrlFetchApp.fetch(api, { muteHttpExceptions: true });
       code = resp.getResponseCode();
       var retryable = code === 429 || code >= 500;
       if (!retryable || attempt >= maxAttempts - 1) break;
-      Utilities.sleep(3000 * Math.pow(2, attempt)); // 3s, 6s
+      Utilities.sleep(4000);
       attempt++;
     }
     if (code !== 200) {
