@@ -11,12 +11,14 @@ const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const puppeteer = require('puppeteer');
+const { allRoutes } = require('./site-routes.cjs');
 
 const DIST = path.resolve(__dirname, '..', 'dist');
 const HOST = '127.0.0.1';
 
-// Routes to pre-render. Keep in sync with src/App.tsx <Routes> and public/sitemap.xml.
-const ROUTES = ['/', '/about', '/privacy', '/terms', '/refund', '/shipping'];
+// Derived from the catalog (scripts/site-routes.cjs) so category/product pages
+// stay in sync automatically.
+const ROUTES = allRoutes;
 
 const MIME = {
   '.html': 'text/html; charset=utf-8',

@@ -2,12 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { MapPin, Mail, Instagram, ExternalLink, ChevronDown } from 'lucide-react';
 import { useLanguage } from '../LanguageContext';
-import { LOGO_SRC, WA_NUMBER, CONTACT_PHONE_DISPLAY, EMAIL, INSTAGRAM_URL, ADDRESS, GOOGLE_MAPS_URL } from '../constants';
+import { LOGO_SRC, WA_NUMBER, CONTACT_PHONE_DISPLAY, EMAIL, INSTAGRAM_URL, ADDRESS, GOOGLE_MAPS_URL, MENU_ITEMS } from '../constants';
+import { categorySlug } from '../utils/slug';
 
 const Footer: React.FC = () => {
   const { t } = useLanguage();
   const year = new Date().getFullYear();
   const [isDesktop, setIsDesktop] = useState(true);
+
+  // Distinct categories from the catalog, for the "Shop by category" links.
+  const seenCats = new Map<string, string>();
+  MENU_ITEMS.forEach(i => i.categories.forEach(c => {
+    const key = c.trim().toLowerCase();
+    if (key && !seenCats.has(key)) seenCats.set(key, c.trim());
+  }));
+  const shopCategories = Array.from(seenCats.values());
 
   useEffect(() => {
     setIsDesktop(window.innerWidth > 640);
@@ -19,7 +28,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 sm:gap-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-6 sm:gap-10">
 
           {/* Brand */}
           <div className="lg:col-span-2">
@@ -51,6 +60,25 @@ const Footer: React.FC = () => {
                   <li key={link.href}>
                     <Link to={link.href} className="text-sm text-white/80 hover:text-bv-green-light transition-colors">
                       {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </div>
+
+          {/* Shop by category */}
+          <div>
+            <details open={isDesktop} className="group cursor-pointer sm:cursor-auto">
+              <summary className="font-bold text-sm mb-4 text-white list-none flex justify-between items-center sm:block">
+                Shop
+                <ChevronDown size={16} className="sm:hidden group-open:rotate-180 transition-transform text-bv-green-light" />
+              </summary>
+              <ul className="space-y-2.5 pb-4 sm:pb-0">
+                {shopCategories.map(cat => (
+                  <li key={cat}>
+                    <Link to={`/category/${categorySlug(cat)}/`} className="text-sm text-white/80 hover:text-bv-green-light transition-colors">
+                      {cat}
                     </Link>
                   </li>
                 ))}

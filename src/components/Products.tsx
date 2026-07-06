@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Plus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { MENU_ITEMS } from '../constants';
 import { MenuItem, PackSize } from '../types';
+import { productSlug } from '../utils/slug';
 import categoriesI18n from '../data/categories-i18n.json';
 
 type Category = string;
@@ -18,7 +20,7 @@ interface ProductCardProps {
   item: MenuItem;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const { t, language } = useLanguage();
   const { addToCart, items } = useCart();
   const [selectedSize, setSelectedSize] = useState<PackSize>(item.packSizes[0]);
@@ -64,7 +66,11 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
       </div>
 
       <div className="p-4 flex flex-col flex-1">
-        <h3 className="font-bold text-bv-dark text-base leading-snug mb-1">{name}</h3>
+        <h3 className="font-bold text-bv-dark text-base leading-snug mb-1">
+          <Link to={`/products/${productSlug(item.name)}/`} className="hover:text-bv-green transition-colors">
+            {name}
+          </Link>
+        </h3>
         <p className="text-bv-muted text-xs leading-relaxed mb-3">{description}</p>
 
         {/* Ingredients */}

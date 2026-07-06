@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import React from 'react';
 import Products from './Products';
 import { CartProvider, useCart } from '../context/CartContext';
@@ -12,12 +13,14 @@ const CartProbe: React.FC = () => {
 
 const renderProducts = () =>
   render(
-    <LanguageProvider>
-      <CartProvider>
-        <Products />
-        <CartProbe />
-      </CartProvider>
-    </LanguageProvider>,
+    <MemoryRouter>
+      <LanguageProvider>
+        <CartProvider>
+          <Products />
+          <CartProbe />
+        </CartProvider>
+      </LanguageProvider>
+    </MemoryRouter>,
   );
 
 beforeEach(() => localStorage.clear());

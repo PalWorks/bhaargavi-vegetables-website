@@ -12,6 +12,9 @@ import AboutPage from './components/AboutPage';
 import Footer from './components/Footer';
 import ScrollVideoBackground from './components/ScrollVideoBackground';
 import Seo from './components/Seo';
+import CategoryPage from './components/CategoryPage';
+import ProductPage from './components/ProductPage';
+import NotFound from './components/NotFound';
 import { PrivacyPolicy, TermsOfService, RefundPolicy, ShippingPolicy } from './components/PolicyPages';
 import { CartProvider } from './context/CartContext';
 import { LanguageProvider, useLanguage } from './LanguageContext';
@@ -77,6 +80,9 @@ function App() {
                 <Route path="/terms" element={<TermsOfService />} />
                 <Route path="/refund" element={<RefundPolicy />} />
                 <Route path="/shipping" element={<ShippingPolicy />} />
+                <Route path="/category/:slug" element={<CategoryPage />} />
+                <Route path="/products/:slug" element={<ProductPage />} />
+                <Route path="*" element={<NotFound />} />
               </Route>
             </Routes>
           </BrowserRouter>

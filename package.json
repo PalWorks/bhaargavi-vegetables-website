@@ -7,7 +7,7 @@
     "predev": "node scripts/download-instagram-images.cjs",
     "dev": "vite",
     "prebuild": "node scripts/download-instagram-images.cjs",
-    "build": "tsc -b && vite build && node scripts/prerender.cjs",
+    "build": "tsc -b && vite build && node scripts/prerender.cjs && node scripts/generate-sitemap.cjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest",
