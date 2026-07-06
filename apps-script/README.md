@@ -105,3 +105,34 @@ priced size is skipped). Notes:
 - **Badge** values `new`, `bestseller`, `pre-order` are special (they set the product's ribbon /
   pre-order button). Any other text is shown as a plain badge.
 - There is **no list/strike-through price column** — discount "was" prices aren't synced.
+
+---
+
+# Core Web Vitals logging (CoreWebVitals.gs)
+
+`CoreWebVitals.gs` measures the live site's performance with the **PageSpeed Insights API** and
+appends the results to a **`CoreWebVitals`** tab in this spreadsheet, so we have a performance
+history to act on if bounce / drop-off appears. It measures one representative URL per template
+(home, a category, a product, FAQ) on **mobile**.
+
+## One-time setup
+
+1. **Add the file.** Extensions → Apps Script → File → **+** → name it `CoreWebVitals.gs` → paste the
+   contents of [`CoreWebVitals.gs`](./CoreWebVitals.gs) → Save.
+2. *(Optional, higher quota)* Project Settings (gear) → **Script Properties** → add
+   `PSI_API_KEY` = a [PageSpeed Insights API key](https://developers.google.com/speed/docs/insights/v5/get-started).
+   Without a key it still works at the low weekly volume used here.
+3. Reload the spreadsheet. From the **Bhaargavi** menu:
+   - **Set up weekly Core Web Vitals log** — creates a Monday ~6 AM trigger (run once; authorize when prompted).
+   - **Log Core Web Vitals now** — runs it immediately (use this to confirm rows appear).
+
+## Reading the results
+
+Each run appends one row per URL to the `CoreWebVitals` tab:
+`Timestamp, URL, Strategy, Perf Score, LCP lab (ms), TBT lab (ms), CLS lab, LCP field (ms),
+INP field (ms), CLS field, Notes`.
+
+- **Lab** values come from the Lighthouse run and are always present (synthetic mobile test).
+- **Field** values come from real Chrome users (CrUX) and only appear once a URL has enough traffic;
+  until then the **Notes** column reads `lab only (no field data yet)`.
+- Targets: **Perf Score** ≥ 90, **LCP** < 2500 ms, **INP** < 200 ms, **CLS** < 0.1.

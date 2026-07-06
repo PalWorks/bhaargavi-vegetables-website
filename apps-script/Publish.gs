@@ -23,6 +23,9 @@ function onOpen() {
   SpreadsheetApp.getUi()
     .createMenu('Bhaargavi')
     .addItem('Publish catalog to website', 'publishToWebsite')
+    .addSeparator()
+    .addItem('Log Core Web Vitals now', 'logCoreWebVitals')
+    .addItem('Set up weekly Core Web Vitals log', 'createCwvTrigger')
     .addToUi();
 }
 
