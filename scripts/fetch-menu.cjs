@@ -32,6 +32,24 @@ function convertDriveUrl(url) {
   return id ? `https://drive.google.com/uc?export=view&id=${id}` : url;
 }
 
+function slugify(name) {
+  return String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_+|_+$/g, '');
+}
+
+// Resolve the product image: convert Drive links, and self-heal Unsplash placeholders
+// (left over from early setup) to the real local photo at public/menu/<slug>.png when
+// one exists — so images stay correct across re-syncs without editing the sheet.
+function resolveImage(rawUrl, name) {
+  const url = convertDriveUrl(rawUrl);
+  if (/images\.unsplash\.com/.test(url)) {
+    const slug = slugify(name);
+    if (slug && fs.existsSync(path.join(__dirname, '..', 'public', 'menu', slug + '.png'))) {
+      return '/menu/' + slug + '.png';
+    }
+  }
+  return url;
+}
+
 /**
  * Transform raw sheet rows (rows[0] = header) into menu items.
  * Exported so the shape can be validated offline against a downloaded snapshot.
@@ -58,16 +76,17 @@ function rowsToItems(rows) {
   return rows.slice(1)
     .filter(r => r[nameCol])
     .map((row, idx) => {
+      const name = String(row[nameCol] || '').trim();
       const item = {
         id: String(idx + 1),
         sortOrder: Number(row[sortCol]) || (idx + 1),
-        name: String(row[nameCol] || '').trim(),
+        name: name,
         description: String(row[descCol] || '').trim(),
         // Kept as typed (may be comma-separated for multiple categories); the site
         // splits, lowercases for matching, and shows known keys with translated labels.
         category: String(row[catCol] || 'cut').trim(),
         badge: String(row[badgeCol] || '').trim(),
-        image: convertDriveUrl(String(row[imageCol] || '').trim()),
+        image: resolveImage(String(row[imageCol] || '').trim(), name),
         ingredients: String(row[ingredientsCol] || '').trim(),
       };
       // Raw numeric size keys, only for offered sizes — matches constants.ts buildPackSizes.

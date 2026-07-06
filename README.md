@@ -92,7 +92,33 @@ Google Sheet ──fetch-menu.cjs────▶ src/data/menu.json  ──▶ M
 3. The user is then sent to `https://wa.me/<number>?text=<message>`.
 
 The WhatsApp number is `SITE_CONFIG.waNumber` (from the Sheet), exposed as `WA_NUMBER` in
-`constants.ts`, with the hardcoded `CONTACT_PHONE` as a fallback.
+`constants.ts`, with the hardcoded `CONTACT_PHONE` as a fallback. The order message uses real
+newlines and is `encodeURIComponent`-ed at send time, and the cart/order always uses the English
+product name so the server-side price recompute in `apps-script/Code.gs` matches the catalog.
+
+## Multi-language (EN / TA / HI)
+
+- **UI strings** live in `src/locales/{en,ta,hi}.ts`, read via `useLanguage().t`. Never hardcode
+  display text. `src/locales/locales.test.ts` fails CI if the locales drift out of sync.
+- **Product content** (name/description/ingredients) and **category tab labels** are
+  machine-translated at build time by `scripts/translate-menu.cjs` (chained into
+  `npm run fetch:menu`), cached in `src/data/i18n-cache.json`, and written into `menu.json`'s
+  `i18n` field + `src/data/categories-i18n.json`. New products translate automatically on the next
+  publish. English is always the fallback. Set `GOOGLE_TRANSLATE_API_KEY` to use the official Cloud
+  Translation API instead of the default public endpoint.
+- Language choice persists in `localStorage` and is reflected on `<html lang>`.
+
+## Analytics
+
+Google Analytics 4 (`G-0G41ZVRP04`) and Microsoft Clarity (`xhu2xeyyc0`) load from `index.html`.
+Their origins are whitelisted in the CSP `meta` tag; adding any new external origin requires
+updating that CSP or the browser will block it.
+
+## Publishing catalog changes
+
+Edit the `ProductCatalog` tab, then either use the spreadsheet's **Bhaargavi → Publish catalog to
+website** button, run `gh workflow run publish.yml`, or `npm run fetch:menu` locally and redeploy.
+See [`apps-script/README.md`](apps-script/README.md) for the button + token setup.
 
 ## The hero background
 
@@ -134,4 +160,6 @@ These are intentionally set to easy-to-find placeholders until the real accounts
 |---|---|---|
 | Instagram `@bhaargavifreshvegetables` | `src/constants.ts` (`INSTAGRAM_URL`, `INSTAGRAM_HANDLE`) | the live handle |
 | Google reviews | `VITE_GOOGLE_PLACE_ID` (unset) | the Business Profile Place ID |
-| `public/favicon.ico` | root favicon | a Bhaargavi-branded icon |
+
+Social preview (`public/og-image.jpg`, 1200x630) and favicons (`public/favicon-32.png`,
+`public/apple-touch-icon.png`) are generated from the logo; replace with custom art if desired.

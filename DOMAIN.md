@@ -15,3 +15,13 @@ Bhaargavi Fresh Cuts provides premium, ready-to-cook, pre-cut vegetables and fru
 - **Delivery Area:** Chennai exclusively.
 - **Order Timing:** Next day delivery for orders placed before 8 PM.
 - **Checkout Mode:** WhatsApp exclusively. No credit card or UPI gateway is hosted on the site.
+
+## Live Setup
+- **Domain:** `bhaargavifreshcuts.com` (Cloudflare Pages, project `bhaargavi-website`);
+  `www` 301-redirects to the apex.
+- **Catalog source of truth:** the `ProductCatalog` tab of the "Bhaargavi Vegetables - SKU Item
+  Master" Google Sheet. The website is fully sheet-driven (no hardcoded product list).
+- **Languages:** English, Tamil, Hindi. Product content is auto-translated at build time.
+- **Analytics:** Google Analytics 4 + Microsoft Clarity.
+- **Order log:** Google Apps Script webhook writes each order to the `Orders` tab and independently
+  recomputes the total from the catalog (MATCH / MISMATCH integrity flag).

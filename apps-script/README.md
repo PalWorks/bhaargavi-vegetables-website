@@ -53,35 +53,38 @@ and one column per pack size named exactly: `100g`, `200g`, `250g`, `300g`, `500
 ## Reading the results
 
 Each order row shows **Client Total** vs **Server Total** and a **Match** column:
-- `Y` — client and catalog agree. Normal.
-- `MISMATCH` — investigate before fulfilling. Usually means the live site had a stale price, or a
-  line's SKU wasn't found in the catalog (see the **Unmatched SKUs** column).
+- `Y` — client and catalog agree AND every line matched the catalog. Normal.
+- `MISMATCH` — investigate before fulfilling. Means the totals disagree, or at least one line's SKU
+  wasn't found in the catalog (see the **Unmatched SKUs** column) so its price couldn't be verified.
+
+**Hardening:** the script only returns `Y` when all SKUs matched, and every written cell is
+sanitized so a value beginning with `=`, `+`, `-`, or `@` is stored as literal text (prevents
+spreadsheet formula injection from a malicious order). After editing `Code.gs`, redeploy via
+**Deploy → Manage deployments → edit → Version: New version** to keep the same `/exec` URL.
 
 ---
 
 # Publish catalog to the website (Publish.gs)
 
-`Publish.gs` adds a **Bhaargavi** menu to the spreadsheet with two actions and lets you push the
-catalog live without touching code. The website reads the **ProductCatalog** tab
-(`scripts/fetch-menu.cjs` → `src/data/menu.json`); "Publish" re-runs that sync, rebuilds, and deploys.
+`Publish.gs` adds a **Bhaargavi** menu with a single action, **Publish catalog to website**, so the
+owner can push catalog changes live without touching code. The website reads the **ProductCatalog**
+tab (`scripts/fetch-menu.cjs` → `src/data/menu.json`); "Publish" re-runs that sync, rebuilds, and deploys.
 
 ## One-time setup
 
 1. **Add the file.** Extensions → Apps Script → File → **+** → name it `Publish.gs` → paste the
    contents of [`Publish.gs`](./Publish.gs) → Save. Reload the spreadsheet; a **Bhaargavi** menu appears.
-2. **Backfill website-only products (once).** Bhaargavi → **Backfill missing products (once)**.
-   This appends the products that existed only on the website (Weekly Veggie Combo, the sprouts /
-   salad health packs, Muskmelon Cut, Ripe Peeled Jackfruit) to ProductCatalog. It is idempotent —
-   running it again skips anything already present.
-3. **Create a GitHub token** so the Publish button can trigger a deploy:
+2. **Create a GitHub token** so the Publish button can trigger a deploy:
    - GitHub → **Settings → Developer settings → Personal access tokens → Fine-grained tokens →
      Generate new token**.
    - **Resource owner:** `PalWorks`. **Repository access:** Only select repositories →
      `bhaargavi-vegetables-website`.
    - **Repository permissions:** **Actions → Read and write**, **Contents → Read-only**.
    - Generate and copy the token (starts with `github_pat_`).
-4. **Store the token.** Apps Script → Project Settings (gear) → **Script Properties** → Add property:
+3. **Store the token.** Apps Script → Project Settings (gear) → **Script Properties** → Add property:
    - Name: `PUSH_TO_GITHUB_TOKEN`  Value: *(the token)*
+
+(A one-time `backfillMissingProducts` migration used to live here; it has been completed and removed.)
 
 ## Daily use
 
