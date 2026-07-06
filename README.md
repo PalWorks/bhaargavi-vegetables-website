@@ -52,8 +52,9 @@ cp .env.example .env   # fill in what you have; everything is optional for local
 npm run dev            # http://localhost:3000
 ```
 
-The app runs fully offline with sensible fallbacks: if `src/data/menu.json` is empty, a built-in
-default catalog (`DEFAULT_MENU_ITEMS` in `src/constants.ts`) is shown.
+The catalog is fully sheet-driven: products come from `src/data/menu.json` (synced from the Google
+Sheet `ProductCatalog` tab). If that file is empty, the product grid simply shows its empty state —
+there is no hardcoded product fallback.
 
 ### Scripts
 
@@ -73,12 +74,13 @@ default catalog (`DEFAULT_MENU_ITEMS` in `src/constants.ts`) is shown.
 Google Sheet ──fetch-config.cjs──▶ src/data/config.json ──▶ SITE_CONFIG
 (Config tab)                                                 (min order, waNumber, delivery info)
 
-Google Sheet ──fetch-menu.cjs────▶ src/data/menu.json  ──▶ MENU_ITEMS  (fallback: DEFAULT_MENU_ITEMS)
-(Products tab)                      (empty [] => fallback)
+Google Sheet ──fetch-menu.cjs────▶ src/data/menu.json  ──▶ MENU_ITEMS
+(ProductCatalog tab)   └─translate-menu.cjs─▶ i18n (ta/hi) + categories-i18n.json
 ```
 
 - **Source of truth for products & config is the Google Sheet**, not the React code. Don't hardcode
-  new products; add rows to the Sheet. The default catalog in `constants.ts` is only a fallback.
+  new products; add rows to the `ProductCatalog` tab. `fetch-menu.cjs` then auto-translates
+  name/description/ingredients and category labels into Tamil/Hindi (cached in `i18n-cache.json`).
 - The **weekly GitHub Action** (`.github/workflows/weekly-sync-and-deploy.yml`) re-fetches the Sheet,
   commits changes, builds, and deploys. All fetch steps are skipped gracefully if secrets are absent.
 

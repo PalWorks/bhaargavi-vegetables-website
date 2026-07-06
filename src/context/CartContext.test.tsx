@@ -26,10 +26,22 @@ describe('buildWhatsAppMessage', () => {
     expect(msg).toContain('Please confirm.');
   });
 
-  it('encodes newlines in the delivery address as %0A', () => {
+  it('keeps real newlines in the message (URL-encoding happens at send time)', () => {
     const msg = buildWhatsAppMessage([item()], 40, 'g', 'c', 'Note', 'Line1\nLine2');
-    expect(msg).toContain('Line1%0ALine2');
-    expect(msg).not.toContain('Line1\nLine2');
+    expect(msg).toContain('Line1\nLine2');
+    expect(msg).not.toContain('%0A');
+  });
+
+  it('survives special characters via encodeURIComponent (no truncation on # or &)', () => {
+    // Regression: a raw wa.me query truncated at the first # or & — the address and
+    // total would be lost. The whole message must be encoded, then decode back intact.
+    const address = '#12, 3rd Cross & Main Rd';
+    const msg = buildWhatsAppMessage([item()], 40, 'g', 'c', 'Note', address);
+    const url = `https://wa.me/916385114580?text=${encodeURIComponent(msg)}`;
+    expect(url).not.toContain('#');
+    expect(url).not.toContain(' ');
+    expect(decodeURIComponent(url)).toContain(address);
+    expect(decodeURIComponent(url)).toContain('*Total: ₹ 40*');
   });
 
   it('includes a custom note under the line when present', () => {

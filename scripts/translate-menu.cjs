@@ -22,6 +22,7 @@ const https = require('https');
 
 const MENU = path.join(__dirname, '..', 'src', 'data', 'menu.json');
 const CACHE = path.join(__dirname, '..', 'src', 'data', 'i18n-cache.json');
+const CATS = path.join(__dirname, '..', 'src', 'data', 'categories-i18n.json');
 const TARGET_LANGS = ['ta', 'hi'];
 const API_KEY = process.env.GOOGLE_TRANSLATE_API_KEY || '';
 
@@ -118,9 +119,21 @@ async function main() {
     item.i18n = i18n;
   }
 
+  // Category tab labels are free-form and data-driven, so translate them too.
+  const catNames = new Set();
+  items.forEach(it => String(it.category || '').split(',').map(s => s.trim()).filter(Boolean).forEach(c => catNames.add(c)));
+  const categoriesI18n = {};
+  for (const c of catNames) {
+    categoriesI18n[c] = {};
+    for (const lang of TARGET_LANGS) categoriesI18n[c][lang] = await tr(c, lang);
+  }
+
   fs.writeFileSync(CACHE, JSON.stringify(cache, null, 2));
+  fs.writeFileSync(CATS, JSON.stringify(categoriesI18n, null, 2));
   fs.writeFileSync(MENU, JSON.stringify(items, null, 2));
-  console.log(`[translate-menu] items: ${items.length} | new: ${translated} | cached: ${cached} | fallback(en): ${failed}`);
+  console.log(`[translate-menu] items: ${items.length} | categories: ${catNames.size} | new: ${translated} | cached: ${cached} | fallback(en): ${failed}`);
 }
 
-main();
+// Never break the build: any unexpected error (disk, unforeseen throw) is logged
+// and swallowed. English remains the fallback everywhere.
+main().catch(err => { console.warn('[translate-menu] skipped:', err && err.message); });

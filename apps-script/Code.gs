@@ -34,7 +34,10 @@ function doPost(e) {
     var priceMap = buildPriceMap_();
     var server = recomputeTotal_(order.lines || [], priceMap);
     var clientTotal = Number(order.clientTotal != null ? order.clientTotal : order.total) || 0;
-    var match = clientTotal === server.total ? 'Y' : 'MISMATCH';
+    // Only 'Y' when the total agrees AND every line matched the catalog. If any SKU is
+    // unmatched, the server total leans on the client's price for that line, so it can't
+    // be trusted — flag it for a human to check.
+    var match = (!server.unmatched && clientTotal === server.total) ? 'Y' : 'MISMATCH';
     appendOrder_(order, clientTotal, server, match);
     return json_({ ok: true, serverTotal: server.total, clientTotal: clientTotal, match: match });
   } catch (err) {
@@ -124,7 +127,15 @@ function appendOrder_(order, clientTotal, server, match) {
     order.address || '',
     order.status || 'New',
     order.waNumber || '',
-  ]);
+  ].map(sanitizeCell_));
+}
+
+// Neutralize spreadsheet formula injection: a posted field beginning with = + - @
+// (or a control char) would otherwise execute as a formula when the owner opens the
+// sheet. Prefixing with an apostrophe forces it to be treated as literal text.
+function sanitizeCell_(v) {
+  if (typeof v !== 'string') return v;
+  return /^[=+\-@\t\r]/.test(v) ? "'" + v : v;
 }
 
 function json_(obj) {

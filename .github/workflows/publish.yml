@@ -13,6 +13,11 @@ permissions:
   contents: write
   deployments: write
 
+# Serialize with the weekly sync so two runs never race on git push / deploy.
+concurrency:
+  group: bhaargavi-deploy
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -51,9 +56,14 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          git pull origin main
+          # Commit local changes first, then rebase onto remote (autostash handles any
+          # residue), so a concurrent update never aborts the pull or blocks the deploy.
           git add src/data/ 2>/dev/null || true
-          git diff --staged --quiet || (git commit -m "chore: publish catalog from ProductCatalog sheet" && git push)
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: publish catalog from ProductCatalog sheet"
+            git pull --rebase --autostash origin main
+            git push
+          fi
 
       - name: Build
         env:

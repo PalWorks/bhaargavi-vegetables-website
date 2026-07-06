@@ -9,6 +9,11 @@ permissions:
   contents: write
   deployments: write
 
+# Serialize with the on-demand publish workflow so two runs never race on git push / deploy.
+concurrency:
+  group: bhaargavi-deploy
+  cancel-in-progress: false
+
 jobs:
   sync-and-deploy:
     runs-on: ubuntu-latest
@@ -88,15 +93,16 @@ jobs:
         run: |
           git config --global user.name 'GitHub Action'
           git config --global user.email 'action@github.com'
-          # Pull latest main BEFORE staging so we are on the newest commit.
-          # This avoids rebase conflicts when other commits land during the
-          # ~8 minute data-fetch window.
-          git pull origin main
           git add src/data/ 2>/dev/null || true
           # Stage image dirs only if they exist (they are created on demand by the fetch steps)
           for d in public/menu public/hero-banner public/testimonials; do [ -d "$d" ] && git add "$d"; done
-          # Only commit and push if there are actual changes
-          git diff --staged --quiet || (git commit -m "chore: weekly sync - instagram feed, menu data & carousel images" && git push)
+          # Commit local changes first, then rebase onto remote (autostash handles any
+          # residue) so commits landing during the ~8 min fetch window don't abort the push.
+          if ! git diff --staged --quiet; then
+            git commit -m "chore: weekly sync - instagram feed, menu data & carousel images"
+            git pull --rebase --autostash origin main
+            git push
+          fi
 
       # --- Install, Test, Audit, Build, Deploy ---
 

@@ -87,7 +87,7 @@ const CartSidebar: React.FC = () => {
       t.cart.whatsapp_custom_note,
       address.trim()
     );
-    const url = `https://wa.me/${WA_NUMBER}?text=${message}`;
+    const url = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`;
 
     // Open WhatsApp synchronously inside the click gesture so mobile popup blockers
     // don't reject it. If it's still blocked (returns null), surface a manual link.

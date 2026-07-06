@@ -92,7 +92,7 @@ function writeItems(items) {
       console.warn(`[fetch-menu] ⚠️  Parsed 0 products but ${existingCount} already exist — keeping existing menu.json (not overwriting with empty).`);
       return;
     }
-    console.warn('[fetch-menu] ⚠️  Parsed 0 products and no existing catalog. The site will fall back to built-in DEFAULT_MENU_ITEMS.');
+    console.warn('[fetch-menu] ⚠️  Parsed 0 products and no existing catalog. The storefront will show an empty product grid until this is fixed.');
   }
   fs.writeFileSync(OUTPUT, JSON.stringify(items, null, 2));
   console.log(`[fetch-menu] Wrote ${items.length} products to ${OUTPUT}`);

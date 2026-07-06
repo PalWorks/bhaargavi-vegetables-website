@@ -35,20 +35,26 @@ const buildPackSizes = (item: Record<string, unknown>): import('./types').PackSi
     .map(s => ({ weight: labelMap[s], price: Number(item[s]) }));
 };
 
-const sheetMenuItems: MenuItem[] = (menuData as Record<string, unknown>[]).map(item => ({
-  id: String(item.id),
-  name: String(item.name),
-  description: String(item.description || ''),
-  packSizes: buildPackSizes(item),
-  image: String(item.image || ''),
-  categories: String(item.category || '').split(',').map(s => s.trim()).filter(Boolean),
-  badge: item.badge ? String(item.badge) : undefined,
-  isNew: String(item.badge).toLowerCase() === 'new',
-  isBestseller: String(item.badge).toLowerCase() === 'bestseller',
-  isPreOrder: String(item.badge).toLowerCase() === 'pre-order',
-  ingredients: item.ingredients ? String(item.ingredients).split(',').map(s => s.trim()) : [],
-  i18n: item.i18n as MenuItem['i18n'],
-}));
+const sheetMenuItems: MenuItem[] = (menuData as Record<string, unknown>[]).map(item => {
+  // Normalize the badge to letters only so 'Pre-Order', 'pre order', 'Sold Out',
+  // 'sold-out' etc. all map to the right flag regardless of how it's typed in the sheet.
+  const badgeKey = String(item.badge || '').toLowerCase().replace(/[^a-z]/g, '');
+  return {
+    id: String(item.id),
+    name: String(item.name),
+    description: String(item.description || ''),
+    packSizes: buildPackSizes(item),
+    image: String(item.image || ''),
+    categories: String(item.category || '').split(',').map(s => s.trim()).filter(Boolean),
+    badge: item.badge ? String(item.badge) : undefined,
+    isNew: badgeKey === 'new',
+    isBestseller: badgeKey === 'bestseller',
+    isPreOrder: badgeKey === 'preorder',
+    isSoldOut: badgeKey === 'soldout',
+    ingredients: item.ingredients ? String(item.ingredients).split(',').map(s => s.trim()) : [],
+    i18n: item.i18n as MenuItem['i18n'],
+  };
+});
 
 export const MENU_ITEMS: MenuItem[] = sheetMenuItems;
 

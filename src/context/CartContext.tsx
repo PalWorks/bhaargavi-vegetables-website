@@ -31,12 +31,13 @@ export const CartProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (saved) {
         const parsed = JSON.parse(saved);
         // Schema validation to prevent tampering crashes
-        if (Array.isArray(parsed) && parsed.every(i => 
+        if (Array.isArray(parsed) && parsed.every(i =>
           typeof i === 'object' && i !== null &&
           typeof i.id === 'string' &&
-          typeof i.price === 'number' && !isNaN(i.price) &&
-          typeof i.quantity === 'number' && !isNaN(i.quantity) &&
-          typeof i.weight === 'string'
+          typeof i.name === 'string' &&
+          typeof i.weight === 'string' &&
+          typeof i.price === 'number' && Number.isFinite(i.price) && i.price >= 0 &&
+          typeof i.quantity === 'number' && Number.isInteger(i.quantity) && i.quantity > 0
         )) {
           // Re-derive prices from the catalog so a tampered/stale persisted price can't
           // drive the displayed total or the minimum-order gate.
@@ -109,17 +110,20 @@ export const buildWhatsAppMessage = (items: CartItem[], cartTotal: number, greet
   const now = new Date();
   const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')} ${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 
-  let msg = `[${timestamp}]%0A%0A${greeting}%0A%0A`;
+  // Build with real newlines; the caller URL-encodes the whole message once
+  // (encodeURIComponent), so characters like #, &, % in names/notes/address
+  // are escaped safely instead of truncating the wa.me query string.
+  let msg = `[${timestamp}]\n\n${greeting}\n\n`;
 
   items.forEach(item => {
-    msg += `${item.quantity} x ${item.name} (${item.weight}) - ₹ ${item.price * item.quantity}%0A`;
+    msg += `${item.quantity} x ${item.name} (${item.weight}) - ₹ ${item.price * item.quantity}\n`;
     if (item.customNote) {
-      msg += `  ${customNoteLabel}: ${item.customNote}%0A`;
+      msg += `  ${customNoteLabel}: ${item.customNote}\n`;
     }
   });
 
-  msg += `%0A*Delivery Address:*%0A${deliveryAddress.replace(/\n/g, '%0A')}%0A`;
-  msg += `%0A*Total: ₹ ${cartTotal}*%0A%0A${confirmText}`;
+  msg += `\n*Delivery Address:*\n${deliveryAddress}\n`;
+  msg += `\n*Total: ₹ ${cartTotal}*\n\n${confirmText}`;
   return msg;
 };
 

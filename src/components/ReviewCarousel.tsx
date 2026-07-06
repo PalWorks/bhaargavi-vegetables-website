@@ -58,10 +58,10 @@ const ReviewCarousel: React.FC = () => {
 
           {/* Controls */}
           <div className="flex justify-center items-center gap-4 mt-8">
-            <button onClick={() => scroll('left')} className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
+            <button aria-label="Previous review" onClick={() => scroll('left')} className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
               <ChevronLeft size={18} />
             </button>
-            <button onClick={() => scroll('right')} className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
+            <button aria-label="Next review" onClick={() => scroll('right')} className="p-2.5 bg-white/10 hover:bg-white/20 text-white rounded-full transition-colors">
               <ChevronRight size={18} />
             </button>
           </div>

@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../LanguageContext';
 import { MENU_ITEMS } from '../constants';
 import { MenuItem, PackSize } from '../types';
+import categoriesI18n from '../data/categories-i18n.json';
 
 type Category = string;
 
@@ -29,6 +30,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
   const name = loc?.name || item.name;
   const description = loc?.description || item.description;
   const ingredients = (loc?.ingredients && loc.ingredients.length ? loc.ingredients : item.ingredients) || [];
+
+  // Defensive: build drops rows with no priced size, but never render a broken card.
+  if (!item.packSizes || item.packSizes.length === 0) return null;
 
   const cartKey = `${item.id}__${selectedSize.weight}`;
   const inCart = items.find(i => `${i.id}__${i.weight}` === cartKey);
@@ -130,24 +134,23 @@ const ProductCard: React.FC<ProductCardProps> = ({ item }) => {
 };
 
 const Products: React.FC = () => {
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const [activeCategory, setActiveCategory] = useState<Category>('all');
 
   // Categories are data-driven: any keyword in the sheet's Category column becomes a tab.
   // An item may list several (comma-separated) and appears under each. Matching is
-  // case-insensitive; the four known keys keep their translated labels, any new keyword
-  // is shown exactly as typed in the sheet. "All" always shows everything.
-  const knownLabels: Record<string, string> = {
-    fresh: t.products.fresh, cut: t.products.cut, health: t.products.health, offers: t.products.offers,
-  };
-  const seen = new Map<string, string>(); // lowercased key -> display label (first occurrence)
+  // case-insensitive. Labels are auto-translated (categories-i18n.json) with the raw
+  // sheet text as the English/fallback. "All" always shows everything.
+  const catI18n = categoriesI18n as Record<string, Record<string, string>>;
+  const seen = new Map<string, string>(); // lowercased key -> raw display text (first occurrence)
   MENU_ITEMS.forEach(i => i.categories.forEach(c => {
     const key = c.trim().toLowerCase();
-    if (key && !seen.has(key)) seen.set(key, knownLabels[key] || c.trim());
+    if (key && !seen.has(key)) seen.set(key, c.trim());
   }));
+  const catLabel = (raw: string) => (language !== 'en' && catI18n[raw]?.[language]) || raw;
   const categories: { key: Category; label: string }[] = [
     { key: 'all', label: t.products.all },
-    ...Array.from(seen, ([key, label]) => ({ key, label })),
+    ...Array.from(seen, ([key, raw]) => ({ key, label: catLabel(raw) })),
   ];
 
   const filtered = activeCategory === 'all'
