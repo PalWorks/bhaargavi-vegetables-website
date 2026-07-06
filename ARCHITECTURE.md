@@ -26,6 +26,13 @@ A purely static Single Page Application. No server, no database.
   - `Layout` (ScrollVideoBackground, Navbar, Footer, CartSidebar, StickyCart)
     - `HomePage` (Hero, Products, ReviewCarousel, GoogleReviews, InstagramFeed)
     - Policy pages (`PrivacyPolicy`, `Terms`, `Refund`, `Shipping`)
+    - `CategoryPage` (`/category/:slug`) — product grid + `CollectionPage`/`ItemList` schema
+    - `ProductPage` (`/products/:slug`) — detail, add-to-cart, WhatsApp CTA, `Product` schema
+    - `FaqPage` (`/faq`) — `FAQPage` schema
+    - `NotFound` (`*`) — client-side 404 (edge 404 is `public/404.html`)
+
+Every route also renders `Seo` (per-route `<head>`) and `JsonLd` (structured data).
+Category/product routes and their slugs are derived from the catalog via `src/utils/slug.ts`.
 
 ## Data flow: Sheet to storefront
 
@@ -63,11 +70,30 @@ Google Sheet (SKU Item Master)
    tab with client vs server total and a MATCH/MISMATCH flag, sanitizing cells against
    spreadsheet formula injection.
 
+## Build-time pre-render & SEO
+
+The SPA is turned into crawlable static HTML at build:
+
+```
+vite build ──▶ scripts/prerender.cjs ──▶ dist/<route>/index.html   (headless Chromium)
+                     │                     (blocks 3rd-party, waits on #root; ~20s)
+                     └─ routes from scripts/site-routes.cjs (mirrors src/utils/slug.ts)
+                                            │  static + /category/<slug>/ + /products/<slug>/
+           scripts/generate-sitemap.cjs ──▶ dist/sitemap.xml   (same route source)
+prebuild: scripts/optimize-images.cjs  ──▶ public/menu/*.webp  (<picture> + PNG fallback)
+```
+
+- Per-route `<head>` via `Seo.tsx`; JSON-LD via `JsonLd.tsx`. No SPA catch-all redirect;
+  unmatched paths serve `public/404.html` (real 404). Cloudflare 308-normalizes to trailing slash.
+- After deploy, `publish.yml` pings **IndexNow** with the sitemap URLs (public key file in `public/`).
+- **Core Web Vitals** are logged weekly to a `CoreWebVitals` Sheet tab by `apps-script/CoreWebVitals.gs`
+  (PageSpeed Insights API; needs a `PSI_API_KEY` script property).
+
 ## Deploy pipeline
 
 - `.github/workflows/publish.yml` — on-demand (`workflow_dispatch` / `repository_dispatch`,
   and the spreadsheet's "Publish catalog to website" button). Fetches config + menu,
-  auto-translates, builds, deploys.
+  auto-translates, builds, deploys, then pings IndexNow.
 - `.github/workflows/weekly-sync-and-deploy.yml` — Monday cron; also syncs Instagram +
   carousel images, lints, tests, builds, deploys.
 - Both share a `concurrency` group and commit-then-rebase so they cannot race.

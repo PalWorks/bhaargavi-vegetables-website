@@ -61,7 +61,7 @@ there is no hardcoded product fallback.
 | Command | What it does |
 |---|---|
 | `npm run dev` | Vite dev server |
-| `npm run build` | Type-check + production build to `dist/` |
+| `npm run build` | Type-check, Vite build, **pre-render every route**, and generate `sitemap.xml` (WebP images built in prebuild) |
 | `npm run preview` | Serve the production build locally |
 | `npm test` | Run the Vitest unit suite |
 | `npm run lint` | ESLint |
@@ -149,12 +149,35 @@ GitHub Actions secrets. Key ones:
 
 ## Deployment
 
-Static build to `dist/`, hosted on Cloudflare Pages. `public/_redirects` (`/* /index.html 200`)
-provides SPA fallback so deep links (`/about`, `/privacy`, …) resolve on refresh.
+Static build to `dist/`, hosted on Cloudflare Pages. Every route is **pre-rendered to its own HTML
+file** at build time (see [SEO & pre-rendering](#seo--pre-rendering)), so deep links resolve directly
+and crawlers get real HTML. There is **no SPA catch-all redirect** — unmatched paths serve
+`public/404.html` with a real 404, and Cloudflare 308-normalizes non-slash → trailing-slash URLs.
 
 Deploys are **manual/scheduled by design** — there is no `push:` trigger, so pushing to `main`
 does not go live on its own. Production updates only via the Monday cron, `gh workflow run
 publish.yml`, or the spreadsheet's Publish button. See [`ARCHITECTURE.md`](ARCHITECTURE.md#deploy-pipeline).
+
+## SEO & pre-rendering
+
+The app is a client-side SPA, so the build renders crawlable HTML for every route:
+
+- **Pre-render (`scripts/prerender.cjs`):** after `vite build`, headless Chromium visits each route
+  and writes `dist/<route>/index.html` with real content. It blocks third-party requests and waits on
+  `#root` content (not `networkidle0`), keeping the build ~20s.
+- **Route list is auto-derived** from the catalog by `scripts/site-routes.cjs`: static pages +
+  `/category/<slug>/` (one per category) + `/products/<slug>/` (one per product). `prerender.cjs` and
+  `scripts/generate-sitemap.cjs` both consume it, so **the sitemap and prerender never drift**. A new
+  page still needs its route in `src/App.tsx` (and, if static, in `site-routes.cjs`).
+- **Per-route `<head>`:** `src/components/Seo.tsx` sets title/description/canonical/OG per route;
+  `src/components/JsonLd.tsx` emits structured data (`Product`, `CollectionPage`/`ItemList`,
+  `FAQPage`, `BreadcrumbList`; `LocalBusiness`/`GroceryStore` in `index.html`).
+- **Images:** `scripts/optimize-images.cjs` (prebuild) generates WebP variants of `public/menu/*.png`;
+  cards/product pages use `<picture>` with a PNG fallback and explicit dimensions (CLS).
+- **IndexNow:** `publish.yml` pings IndexNow with the sitemap URLs after each deploy (public key file
+  in `public/`) so Bing recrawls.
+- **Core Web Vitals monitoring:** `apps-script/CoreWebVitals.gs` logs weekly PSI results to a
+  `CoreWebVitals` tab in the Sheet (see [`apps-script/README.md`](apps-script/README.md)).
 
 ## Placeholders to replace before launch
 

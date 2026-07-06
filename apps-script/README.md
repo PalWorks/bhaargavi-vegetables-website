@@ -119,9 +119,12 @@ history to act on if bounce / drop-off appears. It measures one representative U
 
 1. **Add the file.** Extensions → Apps Script → File → **+** → name it `CoreWebVitals.gs` → paste the
    contents of [`CoreWebVitals.gs`](./CoreWebVitals.gs) → Save.
-2. *(Optional, higher quota)* Project Settings (gear) → **Script Properties** → add
-   `PSI_API_KEY` = a [PageSpeed Insights API key](https://developers.google.com/speed/docs/insights/v5/get-started).
-   Without a key it still works at the low weekly volume used here.
+2. **Required — add a PSI API key.** The keyless PageSpeed Insights quota is effectively 0/day (calls
+   return `HTTP 429`), so a key is needed. Get one via the **"Get a Key"** button on the
+   [PSI getting-started page](https://developers.google.com/speed/docs/insights/v5/get-started), then
+   Project Settings (gear) → **Script Properties** → add `PSI_API_KEY` = *(the key)*. Free tier is
+   25,000 queries/day. The script retries `429`/`5xx` with exponential backoff (3s, 6s) before logging
+   an error row.
 3. Reload the spreadsheet. From the **Bhaargavi** menu:
    - **Set up weekly Core Web Vitals log** — creates a Monday ~6 AM trigger (run once; authorize when prompted).
    - **Log Core Web Vitals now** — runs it immediately (use this to confirm rows appear).
