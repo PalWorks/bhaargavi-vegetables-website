@@ -58,9 +58,19 @@ function measureUrl_(url, key, ts) {
   if (key) api += '&key=' + key;
 
   try {
-    var resp = UrlFetchApp.fetch(api, { muteHttpExceptions: true });
-    if (resp.getResponseCode() !== 200) {
-      return [ts, url, CWV_STRATEGY, '', '', '', '', '', '', '', 'HTTP ' + resp.getResponseCode()];
+    // Retry on 429 (quota/rate) and 5xx (transient) with exponential backoff.
+    var resp, code, attempt = 0, maxAttempts = 3;
+    while (true) {
+      resp = UrlFetchApp.fetch(api, { muteHttpExceptions: true });
+      code = resp.getResponseCode();
+      var retryable = code === 429 || code >= 500;
+      if (!retryable || attempt >= maxAttempts - 1) break;
+      Utilities.sleep(3000 * Math.pow(2, attempt)); // 3s, 6s
+      attempt++;
+    }
+    if (code !== 200) {
+      var suffix = attempt > 0 ? ' after ' + (attempt + 1) + ' tries' : '';
+      return [ts, url, CWV_STRATEGY, '', '', '', '', '', '', '', 'HTTP ' + code + suffix];
     }
     var data = JSON.parse(resp.getContentText());
     var lh = data.lighthouseResult || {};
