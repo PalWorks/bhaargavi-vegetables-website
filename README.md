@@ -160,16 +160,21 @@ publish.yml`, or the spreadsheet's Publish button. See [`ARCHITECTURE.md`](ARCHI
 
 ## SEO & pre-rendering
 
-The app is a client-side SPA, so the build renders crawlable HTML for every route:
+The app is a client-side SPA, so the build **server-renders** crawlable HTML for every route and the
+client **hydrates** it (fast LCP — the content is in the HTML, not gated on JS):
 
-- **Pre-render (`scripts/prerender.cjs`):** after `vite build`, headless Chromium visits each route
-  and writes `dist/<route>/index.html` with real content. It blocks third-party requests and waits on
-  `#root` content (not `networkidle0`), keeping the build ~20s.
+- **Pre-render (`scripts/prerender.cjs` + `src/entry-server.tsx`):** after `vite build`, a second
+  `vite build --ssr` compiles a server bundle; `prerender.cjs` calls `react-dom/server`'s
+  `renderToString` for each route and injects the marker-rich HTML into `dist/<route>/index.html`.
+  No headless browser. Because SSR runs only the initial render (no effects), the output is exactly
+  what the client hydrates against — clean hydration, no mismatches. The client mounts with
+  `hydrateRoot` (`src/index.tsx`), not `createRoot`.
 - **Route list is auto-derived** from the catalog by `scripts/site-routes.cjs`: static pages +
   `/category/<slug>/` (one per category) + `/products/<slug>/` (one per product). `prerender.cjs` and
   `scripts/generate-sitemap.cjs` both consume it, so **the sitemap and prerender never drift**. A new
   page still needs its route in `src/App.tsx` (and, if static, in `site-routes.cjs`).
-- **Per-route `<head>`:** `src/components/Seo.tsx` sets title/description/canonical/OG per route;
+- **Per-route `<head>`:** `src/components/Seo.tsx` sets title/description/canonical/OG per route (and
+  records them via `src/utils/head.ts` so the SSR prerender injects them into the static HTML);
   `src/components/JsonLd.tsx` emits structured data (`Product`, `CollectionPage`/`ItemList`,
   `FAQPage`, `BreadcrumbList`; `LocalBusiness`/`GroceryStore` in `index.html`).
 - **Images:** `scripts/optimize-images.cjs` (prebuild) generates WebP variants of `public/menu/*.png`;

@@ -72,18 +72,22 @@ Google Sheet (SKU Item Master)
 
 ## Build-time pre-render & SEO
 
-The SPA is turned into crawlable static HTML at build:
+The SPA is server-rendered to crawlable static HTML at build (no headless browser):
 
 ```
-vite build ──▶ scripts/prerender.cjs ──▶ dist/<route>/index.html   (headless Chromium)
-                     │                     (blocks 3rd-party, waits on #root; ~20s)
+vite build            ──▶ dist/ (client bundle + index.html template)
+vite build --ssr      ──▶ dist-server/entry-server.js  (renderToString + StaticRouter)
+scripts/prerender.cjs ──▶ dist/<route>/index.html   (SSR HTML injected into #root + per-route <head>)
                      └─ routes from scripts/site-routes.cjs (mirrors src/utils/slug.ts)
                                             │  static + /category/<slug>/ + /products/<slug>/
-           scripts/generate-sitemap.cjs ──▶ dist/sitemap.xml   (same route source)
+scripts/generate-sitemap.cjs ──▶ dist/sitemap.xml   (same route source)
 prebuild: scripts/optimize-images.cjs  ──▶ public/menu/*.webp  (<picture> + PNG fallback)
 ```
 
-- Per-route `<head>` via `Seo.tsx`; JSON-LD via `JsonLd.tsx`. No SPA catch-all redirect;
+- The client mounts with **`hydrateRoot`** (`src/index.tsx`) and adopts the SSR HTML — content is in
+  the HTML (fast LCP), not gated on JS. SSR runs only the initial render, so hydration is clean.
+- Per-route `<head>` via `Seo.tsx` (recorded through `src/utils/head.ts` and injected by the
+  prerender); JSON-LD via `JsonLd.tsx`. No SPA catch-all redirect;
   unmatched paths serve `public/404.html` (real 404). Cloudflare 308-normalizes to trailing slash.
 - After deploy, `publish.yml` pings **IndexNow** with the sitemap URLs (public key file in `public/`).
 - **Core Web Vitals** are logged weekly to a `CoreWebVitals` Sheet tab by `apps-script/CoreWebVitals.gs`

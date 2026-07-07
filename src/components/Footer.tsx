@@ -142,7 +142,7 @@ const Footer: React.FC = () => {
                   <a href={GOOGLE_MAPS_URL} target="_blank" rel="noreferrer"
                     className="flex items-start gap-2 text-sm text-white/80 hover:text-bv-green-light transition-colors">
                     <MapPin size={15} className="mt-0.5 shrink-0 text-bv-green" />
-                    <span>{ADDRESS} <ExternalLink size={11} className="inline ml-1" /></span>
+                    <span>{ADDRESS}<ExternalLink size={11} className="inline ml-1" /></span>
                   </a>
                 </li>
               </ul>

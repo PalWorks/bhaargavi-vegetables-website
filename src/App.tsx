@@ -67,30 +67,41 @@ const HomePage: React.FC = () => (
   </>
 );
 
+// Providers shared by the browser and server (prerender) entries.
+export const AppShell: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <ErrorBoundary>
+    <LanguageProvider>
+      <CartProvider>{children}</CartProvider>
+    </LanguageProvider>
+  </ErrorBoundary>
+);
+
+// Route table — router-agnostic so the browser entry can wrap it in BrowserRouter
+// and the prerender entry (src/entry-server.tsx) in StaticRouter.
+export const AppRoutes: React.FC = () => (
+  <Routes>
+    <Route element={<Layout />}>
+      <Route path="/" element={<HomePage />} />
+      <Route path="/about" element={<AboutPage />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/terms" element={<TermsOfService />} />
+      <Route path="/refund" element={<RefundPolicy />} />
+      <Route path="/shipping" element={<ShippingPolicy />} />
+      <Route path="/faq" element={<FaqPage />} />
+      <Route path="/category/:slug" element={<CategoryPage />} />
+      <Route path="/products/:slug" element={<ProductPage />} />
+      <Route path="*" element={<NotFound />} />
+    </Route>
+  </Routes>
+);
+
 function App() {
   return (
-    <ErrorBoundary>
-      <LanguageProvider>
-        <CartProvider>
-          <BrowserRouter>
-            <Routes>
-              <Route element={<Layout />}>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/privacy" element={<PrivacyPolicy />} />
-                <Route path="/terms" element={<TermsOfService />} />
-                <Route path="/refund" element={<RefundPolicy />} />
-                <Route path="/shipping" element={<ShippingPolicy />} />
-                <Route path="/faq" element={<FaqPage />} />
-                <Route path="/category/:slug" element={<CategoryPage />} />
-                <Route path="/products/:slug" element={<ProductPage />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
-        </CartProvider>
-      </LanguageProvider>
-    </ErrorBoundary>
+    <AppShell>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </AppShell>
   );
 }
 

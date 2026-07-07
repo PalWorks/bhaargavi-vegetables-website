@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { ssrHead } from '../utils/head';
 
 const SITE_URL = 'https://bhaargavifreshcuts.com';
 
@@ -28,9 +29,14 @@ function setMeta(selector: string, attr: 'name' | 'property', key: string, conte
 }
 
 const Seo: React.FC<SeoProps> = ({ title, description, path }) => {
-  useEffect(() => {
-    const url = `${SITE_URL}${path}`;
+  const url = `${SITE_URL}${path}`;
 
+  // Record for the SSR prerender to inject into the HTML head (renderToString
+  // does not run the useEffect below). Harmless on the client — the effect is
+  // the source of truth there (and handles client-side route changes).
+  ssrHead.current = { title, description, url };
+
+  useEffect(() => {
     document.title = title;
     setMeta('meta[name="description"]', 'name', 'description', description);
 
@@ -50,7 +56,7 @@ const Seo: React.FC<SeoProps> = ({ title, description, path }) => {
     setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
     setMeta('meta[name="twitter:description"]', 'name', 'twitter:description', description);
     setMeta('meta[name="twitter:url"]', 'name', 'twitter:url', url);
-  }, [title, description, path]);
+  }, [title, description, path, url]);
 
   return null;
 };

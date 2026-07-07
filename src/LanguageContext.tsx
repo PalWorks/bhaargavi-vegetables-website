@@ -14,25 +14,30 @@ const STORAGE_KEY = 'bhaargavi-lang';
 // language to translations automatically includes it in the toggle.
 const LANGUAGES = Object.keys(translations) as Language[];
 
-const initialLanguage = (): Language => {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY) as Language | null;
-    if (saved && LANGUAGES.includes(saved)) return saved;
-  } catch { /* localStorage unavailable */ }
-  return 'en';
-};
-
 export const LanguageProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [language, setLanguage] = useState<Language>(initialLanguage);
+  // First render is always 'en' to match the build-time pre-rendered HTML (which
+  // has no localStorage), so hydration doesn't mismatch. The saved language is
+  // adopted right after mount.
+  const [language, setLanguage] = useState<Language>('en');
 
-  // Persist the choice and reflect it on <html lang> for accessibility/SEO.
   useEffect(() => {
-    try { localStorage.setItem(STORAGE_KEY, language); } catch { /* ignore */ }
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) as Language | null;
+      if (saved && LANGUAGES.includes(saved) && saved !== 'en') setLanguage(saved);
+    } catch { /* localStorage unavailable */ }
+  }, []);
+
+  // Reflect on <html lang> for accessibility/SEO.
+  useEffect(() => {
     document.documentElement.lang = language;
   }, [language]);
 
   const toggleLanguage = () => {
-    setLanguage(prev => LANGUAGES[(LANGUAGES.indexOf(prev) + 1) % LANGUAGES.length]);
+    setLanguage(prev => {
+      const next = LANGUAGES[(LANGUAGES.indexOf(prev) + 1) % LANGUAGES.length];
+      try { localStorage.setItem(STORAGE_KEY, next); } catch { /* ignore */ }
+      return next;
+    });
   };
 
   const t = translations[language];

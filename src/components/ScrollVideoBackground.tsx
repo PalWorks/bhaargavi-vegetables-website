@@ -53,7 +53,10 @@ const ScrollVideoBackground: React.FC = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
-  // Decide mode after mount (needs window / navigator).
+  // Decide mode after mount (needs window / navigator). The prerender renders the
+  // initial 'poster' state (renderToString runs no effects), which matches this
+  // component's first client render — so hydration is clean and the client then
+  // enhances to canvas/video here.
   useEffect(() => {
     setMode(chooseMode());
   }, []);
