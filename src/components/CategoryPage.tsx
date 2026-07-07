@@ -42,7 +42,9 @@ const CategoryPage: React.FC = () => {
     `Fresh ${rawLabel.toLowerCase()} from Bhaargavi Fresh Cuts, delivered across Chennai. RO water washed, AC room processed, no preservatives.`;
 
   const title = `${rawLabel} - Fresh Cut & Delivered in Chennai | Bhaargavi Fresh Cuts`;
-  const description = `Order ${rawLabel.toLowerCase()} online in Chennai. ${intro.slice(0, 110)}`;
+  // Use the intro's first sentence (word-safe) so the meta description never cuts mid-word.
+  const firstSentence = intro.split('. ')[0].replace(/\.$/, '');
+  const description = `Order ${rawLabel.toLowerCase()} online in Chennai. ${firstSentence}.`;
   const path = `/category/${slug}/`;
 
   const breadcrumb = {
@@ -67,7 +69,7 @@ const CategoryPage: React.FC = () => {
         '@type': 'ListItem',
         position: idx + 1,
         name: it.name,
-        url: `${SITE_URL}/products/${productSlug(it.name)}/`,
+        item: `${SITE_URL}/products/${productSlug(it.name)}/`,
       })),
     },
   };
