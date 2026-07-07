@@ -4,9 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
  * Hero background.
  *
  * Progressive enhancement, decided once per session by device capability:
- *   - 'canvas' : scroll-scrubbed image sequence (primary). No <video> seeking, so it is
- *                smooth and reliable — frames are pre-decoded images drawn to a canvas.
- *   - 'video'  : autoplay muted loop with cheap GPU parallax (fallback for phones / low power).
+ *   - 'canvas' : scroll-scrubbed image sequence (primary, all motion-allowed devices incl.
+ *                phones). No <video> seeking, so it is smooth and reliable — frames are
+ *                pre-decoded images drawn to a canvas.
+ *   - 'video'  : autoplay muted loop with cheap GPU parallax (safety fallback if the canvas
+ *                cannot paint — low memory or decode failure).
  *   - 'poster' : static image (reduced-motion, save-data, or slow connections).
  *
  * A static poster is always painted underneath as the instant first frame; canvas/video
@@ -36,13 +38,11 @@ function chooseMode(): Mode {
   if (conn?.saveData === true) return 'poster';
   if (conn?.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return 'poster';
 
-  const deviceMemory = (navigator as unknown as { deviceMemory?: number }).deviceMemory;
-  const lowMemory = typeof deviceMemory === 'number' && deviceMemory <= 4;
-  const wideScreen = mq('(min-width: 1024px)');
-
-  // Frame-scrub only on capable large screens; everything else gets the smooth loop video.
-  if (wideScreen && !lowMemory) return 'canvas';
-  return 'video';
+  // Scroll-scrubbed canvas on ALL motion-allowed devices, including phones. The canvas
+  // draws pre-decoded JPEG frames (no <video> seeking), so it avoids the mobile seek-loop
+  // lag of the old scrubbed-video approach. If the canvas can't paint (low memory / decode
+  // failure), the effect's 6s safety timeout falls back to the loop 'video' automatically.
+  return 'canvas';
 }
 
 const frameUrl = (i: number) => `/hero-frames/frame_${String(i).padStart(3, '0')}.jpg`;
