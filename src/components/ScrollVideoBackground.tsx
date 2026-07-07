@@ -4,11 +4,11 @@ import React, { useEffect, useRef, useState } from 'react';
  * Hero background.
  *
  * Progressive enhancement, decided once per session by device capability:
- *   - 'canvas' : scroll-scrubbed image sequence (primary, all motion-allowed devices incl.
- *                phones). No <video> seeking, so it is smooth and reliable — frames are
- *                pre-decoded images drawn to a canvas.
- *   - 'video'  : autoplay muted loop with cheap GPU parallax (safety fallback if the canvas
- *                cannot paint — low memory or decode failure).
+ *   - 'canvas' : scroll-scrubbed image sequence (primary, capable large screens). No <video>
+ *                seeking, so it is smooth and reliable — frames are pre-decoded images drawn
+ *                to a canvas. Gated to wide/non-low-memory devices: the ~5.2MB sequence wrecks
+ *                mobile LCP if loaded on phones.
+ *   - 'video'  : autoplay muted loop with cheap GPU parallax (phones / low power).
  *   - 'poster' : static image (reduced-motion, save-data, or slow connections).
  *
  * A static poster is always painted underneath as the instant first frame; canvas/video
@@ -38,11 +38,16 @@ function chooseMode(): Mode {
   if (conn?.saveData === true) return 'poster';
   if (conn?.effectiveType && ['slow-2g', '2g', '3g'].includes(conn.effectiveType)) return 'poster';
 
-  // Scroll-scrubbed canvas on ALL motion-allowed devices, including phones. The canvas
-  // draws pre-decoded JPEG frames (no <video> seeking), so it avoids the mobile seek-loop
-  // lag of the old scrubbed-video approach. If the canvas can't paint (low memory / decode
-  // failure), the effect's 6s safety timeout falls back to the loop 'video' automatically.
-  return 'canvas';
+  const deviceMemory = (navigator as unknown as { deviceMemory?: number }).deviceMemory;
+  const lowMemory = typeof deviceMemory === 'number' && deviceMemory <= 4;
+  const wideScreen = mq('(min-width: 1024px)');
+
+  // Frame-scrub only on capable large screens. Phones get the lightweight autoplay loop:
+  // the 96-frame / ~5.2MB sequence eagerly loaded on mobile starves the critical render
+  // path and the full-viewport canvas fades in late as the LCP element (measured mobile
+  // LCP jumped ~3s -> ~8s). Keep the scrub where bandwidth/CPU can afford it.
+  if (wideScreen && !lowMemory) return 'canvas';
+  return 'video';
 }
 
 const frameUrl = (i: number) => `/hero-frames/frame_${String(i).padStart(3, '0')}.jpg`;
