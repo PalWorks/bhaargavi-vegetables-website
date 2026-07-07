@@ -91,7 +91,9 @@
     "Cut Vegetables": "காய்கறிகளை வெட்டுங்கள்",
     "Health Packs": "ஹெல்த் பேக்குகள்",
     "Fresh": "புதியது",
-    "Combo offers": "காம்போ சலுகைகள்"
+    "Combo offers": "காம்போ சலுகைகள்",
+    "onion": "வெங்காயம்",
+    "big size easy peeling": "பெரிய அளவு எளிதாக உரித்தல்"
   },
   "hi": {
     "Sambar Onion Peeled": "सांबर प्याज छिला हुआ",
@@ -185,6 +187,8 @@
     "Cut Vegetables": "सब्जियां काटें",
     "Health Packs": "स्वास्थ्य पैक",
     "Fresh": "ताजा",
-    "Combo offers": "कॉम्बो ऑफर"
+    "Combo offers": "कॉम्बो ऑफर",
+    "onion": "प्याज",
+    "big size easy peeling": "बड़े आकार का आसान छीलना"
   }
 }
