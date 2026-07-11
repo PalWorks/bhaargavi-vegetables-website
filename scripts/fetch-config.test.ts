@@ -44,6 +44,6 @@ describe('parseConfigRows', () => {
   it('lets a populated sheet override defaults while defaults fill the rest', () => {
     const merged = { ...DEFAULTS, ...parseConfigRows([['Min Order Value', '199']]) };
     expect(merged.minOrderValue).toBe(199);
-    expect(merged.waNumber).toBe('916385114580'); // from defaults
+    expect(merged.waNumber).toBe('919150219379'); // from defaults
   });
 });

@@ -13,7 +13,7 @@ describe('<GoogleReviews> without a Place ID', () => {
     renderIt();
     expect(screen.getByRole('heading', { name: /rated 5\.0/i })).toBeInTheDocument();
     const cta = screen.getByRole('link', { name: /order/i });
-    expect(cta.getAttribute('href')).toContain('wa.me/916385114580');
+    expect(cta.getAttribute('href')).toContain('wa.me/919150219379');
   });
 
   it('renders no Google review links (no broken placeholders)', () => {

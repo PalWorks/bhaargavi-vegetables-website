@@ -31,6 +31,6 @@ describe('<Navbar> accessibility', () => {
     const waLinks = screen.getAllByRole('link', { name: /order/i })
       .filter(a => a.getAttribute('href')?.includes('wa.me'));
     expect(waLinks.length).toBeGreaterThan(0);
-    expect(waLinks[0].getAttribute('href')).toContain('wa.me/916385114580');
+    expect(waLinks[0].getAttribute('href')).toContain('wa.me/919150219379');
   });
 });

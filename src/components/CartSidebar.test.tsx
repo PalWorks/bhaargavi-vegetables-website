@@ -82,7 +82,7 @@ describe('<CartSidebar> checkout flow', () => {
 
     expect(openSpy).toHaveBeenCalledTimes(1);
     const url = openSpy.mock.calls[0][0] as string;
-    expect(url).toContain('https://wa.me/916385114580?text=');
+    expect(url).toContain('https://wa.me/919150219379?text=');
     const decoded = decodeURIComponent(url);
     expect(decoded).toContain('Weekly Veggie Combo');
     expect(decoded).toContain('Total: ₹ 299');

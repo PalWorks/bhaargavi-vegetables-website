@@ -37,7 +37,7 @@ describe('buildWhatsAppMessage', () => {
     // total would be lost. The whole message must be encoded, then decode back intact.
     const address = '#12, 3rd Cross & Main Rd';
     const msg = buildWhatsAppMessage([item()], 40, 'g', 'c', 'Note', address);
-    const url = `https://wa.me/916385114580?text=${encodeURIComponent(msg)}`;
+    const url = `https://wa.me/919150219379?text=${encodeURIComponent(msg)}`;
     expect(url).not.toContain('#');
     expect(url).not.toContain(' ');
     expect(decodeURIComponent(url)).toContain(address);

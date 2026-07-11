@@ -39,7 +39,7 @@ export const PrivacyPolicy: React.FC = () => (
     <h2>2. How We Use Your Information</h2>
     <p>Your contact information is used solely to process your order, confirm delivery, and provide customer support via WhatsApp. We do not sell or share your data with third parties.</p>
     <h2>3. WhatsApp Communication</h2>
-    <p>By ordering through WhatsApp, you consent to receive order confirmation and delivery updates from our team at +91 63851 14580.</p>
+    <p>By ordering through WhatsApp, you consent to receive order confirmation and delivery updates from our team at +91 91502 19379.</p>
     <h2>4. Cookies</h2>
     <p>This website uses browser local storage to save your cart. No cookies are sent to third-party servers.</p>
     <h2>5. Data Retention</h2>
@@ -95,7 +95,7 @@ export const RefundPolicy: React.FC = () => (
     <h2>5. Cancellation</h2>
     <p>Orders can be cancelled up to 1 hour after placing via WhatsApp. After our team has begun preparing your order, cancellations are not accepted.</p>
     <h2>6. Contact</h2>
-    <p>For all refund queries, contact us at +91 63851 14580 on WhatsApp.</p>
+    <p>For all refund queries, contact us at +91 91502 19379 on WhatsApp.</p>
   </PolicyLayout>
 );
 

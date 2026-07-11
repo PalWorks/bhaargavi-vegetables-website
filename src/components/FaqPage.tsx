@@ -21,7 +21,7 @@ const FAQS: { q: string; a: string }[] = [
   },
   {
     q: 'How do I place an order?',
-    a: 'Orders are placed via WhatsApp at +91 63851 14580. Add items to your cart on the website and check out through WhatsApp, or message us directly.',
+    a: 'Orders are placed via WhatsApp at +91 91502 19379. Add items to your cart on the website and check out through WhatsApp, or message us directly.',
   },
   {
     q: 'Are your vegetables preservative-free and hygienic?',

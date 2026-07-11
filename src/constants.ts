@@ -6,8 +6,8 @@ import instagramData from './data/instagram.json';
 import configData from './data/config.json';
 
 export const LOGO_SRC = '/BhaargaviLogo.jpg';
-export const CONTACT_PHONE = '916385114580';
-export const CONTACT_PHONE_DISPLAY = '+91 63851 14580';
+export const CONTACT_PHONE = '919150219379';
+export const CONTACT_PHONE_DISPLAY = '+91 91502 19379';
 export const EMAIL = 'bhaargavifreshvegetables@gmail.com';
 export const INSTAGRAM_HANDLE = 'bhaargavifreshvegetables';
 export const INSTAGRAM_URL = 'https://www.instagram.com/bhaargavifreshvegetables';
