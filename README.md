@@ -91,8 +91,11 @@ Google Sheet ──fetch-menu.cjs────▶ src/data/menu.json  ──▶ M
    `VITE_APPS_SCRIPT_URL` (2s timeout, `no-cors`, non-blocking).
 3. The user is then sent to `https://wa.me/<number>?text=<message>`.
 
-The WhatsApp number is `SITE_CONFIG.waNumber` (from the Sheet), exposed as `WA_NUMBER` in
-`constants.ts`, with the hardcoded `CONTACT_PHONE` as a fallback. The order message uses real
+The WhatsApp number is `SITE_CONFIG.waNumber`, exposed as `WA_NUMBER` in `constants.ts`, with the
+hardcoded `CONTACT_PHONE` as a final fallback. The `Config` tab *can* carry a `waNumber` row, but
+currently has none, so the value comes from `DEFAULTS.waNumber` in `fetch-config.cjs` (written into
+`config.json` on each sync). To change the number, edit that default plus the display strings in
+`constants.ts`, `index.html`, `public/llms.txt`, `FaqPage.tsx`, and `PolicyPages.tsx`. The order message uses real
 newlines and is `encodeURIComponent`-ed at send time, and the cart/order always uses the English
 product name so the server-side price recompute in `apps-script/Code.gs` matches the catalog.
 

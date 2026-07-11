@@ -58,8 +58,9 @@ build time. See `ARCHITECTURE.md` for the data-flow diagram.
   placeholder URLs to the local photo when one exists.
 - **Copy/labels:** edit `src/locales/en.ts` and mirror the key in `ta.ts` + `hi.ts`
   (the parity test enforces this).
-- **Site config** (min order, WhatsApp number, delivery info): `Config` tab →
-  `src/data/config.json` → `SITE_CONFIG`.
+- **Site config** (min order, delivery info): `Config` tab → `src/data/config.json` → `SITE_CONFIG`.
+  The **WhatsApp number** has no `Config` row today, so it defaults from `DEFAULTS.waNumber` in
+  `fetch-config.cjs` (see README "Checkout & order logging" for the full list of files to edit).
 
 ## Build, test, deploy
 
