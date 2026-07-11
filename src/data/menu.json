@@ -785,32 +785,5 @@
         ]
       }
     }
-  },
-  {
-    "id": "28",
-    "sortOrder": 28,
-    "name": "onion",
-    "description": "big size easy peeling",
-    "category": "Fresh",
-    "badge": "best seller",
-    "image": "",
-    "ingredients": "onion",
-    "1kg": 40,
-    "i18n": {
-      "ta": {
-        "name": "வெங்காயம்",
-        "description": "பெரிய அளவு எளிதாக உரித்தல்",
-        "ingredients": [
-          "வெங்காயம்"
-        ]
-      },
-      "hi": {
-        "name": "प्याज",
-        "description": "बड़े आकार का आसान छीलना",
-        "ingredients": [
-          "प्याज"
-        ]
-      }
-    }
   }
 ]
