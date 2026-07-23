@@ -7,7 +7,8 @@ import CartSidebar from './components/CartSidebar';
 import StickyCart from './components/StickyCart';
 import ReviewCarousel from './components/ReviewCarousel';
 import GoogleReviews from './components/GoogleReviews';
-import InstagramFeed from './components/InstagramFeed';
+// Instagram section temporarily hidden
+// import InstagramFeed from './components/InstagramFeed';
 import AboutPage from './components/AboutPage';
 import Footer from './components/Footer';
 import ScrollVideoBackground from './components/ScrollVideoBackground';
@@ -63,7 +64,8 @@ const HomePage: React.FC = () => (
     <Products />
     <ReviewCarousel />
     <GoogleReviews />
-    <InstagramFeed />
+    {/* Instagram section temporarily hidden */}
+    {/* <InstagramFeed /> */}
   </>
 );
 

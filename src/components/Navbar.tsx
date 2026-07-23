@@ -25,7 +25,8 @@ const Navbar: React.FC = () => {
     { label: t.nav.products, href: '/#products' },
     { label: t.nav.about, href: '/about' },
     { label: t.nav.reviews, href: '/#reviews' },
-    { label: t.nav.instagram, href: '/#instagram' },
+    // Instagram section temporarily hidden
+    // { label: t.nav.instagram, href: '/#instagram' },
   ];
 
   const langLabels: Record<string, string> = { en: 'EN', ta: 'தமிழ்', hi: 'हिंदी' };
